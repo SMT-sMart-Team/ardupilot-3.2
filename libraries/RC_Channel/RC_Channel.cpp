@@ -434,6 +434,9 @@ RC_Channel::norm_output()
 void RC_Channel::output() const
 {
     hal.rcout->write(_ch_out, radio_out);
+#ifdef  SET_MAGIC_SYNC
+    hal.rcout->set_magic_sync();
+#endif
 }
 
 void RC_Channel::output_trim() const
@@ -448,6 +451,9 @@ void RC_Channel::output_trim_all()
             rc_ch[i]->output_trim();
         }
     }
+#ifdef  SET_MAGIC_SYNC
+    hal.rcout->set_magic_sync();
+#endif
 }
 
 /*

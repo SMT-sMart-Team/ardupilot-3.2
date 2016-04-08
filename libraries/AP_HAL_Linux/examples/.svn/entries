@@ -1,7 +1,7 @@
 10
 
 dir
-479
+463
 svn://115.28.107.37/Smart-bus/Dev/Code/Demo/ardupilot/libraries/AP_HAL_Linux/examples
 svn://115.28.107.37
 
@@ -26,9 +26,9 @@ yanjie
 
 4da25ddb-b2b7-de4b-b677-2d9e5df4c821
 
-pru-test
+BusTest
 dir
 
-BusTest
+pru-test
 dir
 

@@ -1,7 +1,7 @@
 10
 
 dir
-479
+463
 svn://115.28.107.37/Smart-bus/Dev/Code/Demo/ardupilot/libraries/AP_HAL_FLYMAPLE/examples
 svn://115.28.107.37
 
@@ -25,6 +25,9 @@ yanjie
 
 
 4da25ddb-b2b7-de4b-b677-2d9e5df4c821
+
+Scheduler
+dir
 
 Blink
 dir
@@ -63,8 +66,5 @@ RCPassthroughTest
 dir
 
 AP_Baro_BMP085_test
-dir
-
-Scheduler
 dir
 

@@ -1,7 +1,7 @@
 10
 
 dir
-479
+463
 svn://115.28.107.37/Smart-bus/Dev/Code/Demo/ardupilot/libraries/AP_Compass/examples/AP_Compass_test
 svn://115.28.107.37
 
@@ -26,81 +26,13 @@ yanjie
 
 4da25ddb-b2b7-de4b-b677-2d9e5df4c821
 
-AP_Compass_test.pde
-file
-
-
-
-
-2016-01-25T05:11:19.690683Z
-bb1c8f3e9db23b8a0dfe2d3644c059b1
-2015-09-18T01:57:26.754028Z
-378
-yanjie
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-4143
-
-Makefile
-file
-
-
-
-
-2016-01-25T05:11:19.686683Z
-a40257ccc0bbb21a1328ae1ee87b5cb1
-2015-09-18T02:24:12.231902Z
-380
-yanjie
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-30
-
 nocore.inoflag
 file
 
 
 
 
-2016-01-25T05:11:19.686683Z
+2016-01-11T02:52:47.564609Z
 d41d8cd98f00b204e9800998ecf8427e
 2015-09-18T01:57:26.754028Z
 378
@@ -134,7 +66,7 @@ file
 
 
 
-2016-01-25T05:11:19.690683Z
+2016-01-11T02:52:47.568609Z
 69d6554704086c138121d4714137882c
 2015-09-18T01:57:26.754028Z
 378
@@ -161,4 +93,72 @@ has-props
 
 
 1175888
+
+AP_Compass_test.pde
+file
+
+
+
+
+2016-01-11T02:52:47.568609Z
+bb1c8f3e9db23b8a0dfe2d3644c059b1
+2015-09-18T01:57:26.754028Z
+378
+yanjie
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4143
+
+Makefile
+file
+
+
+
+
+2016-01-11T02:52:47.568609Z
+a40257ccc0bbb21a1328ae1ee87b5cb1
+2015-09-18T02:24:12.231902Z
+380
+yanjie
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+30
 

@@ -130,6 +130,9 @@ void AP_Motors::throttle_pass_through(int16_t pwm)
                 hal.rcout->write(pgm_read_byte(&_motor_to_channel_map[i]), pwm);
             }
         }
+#ifdef  SET_MAGIC_SYNC
+        hal.rcout->set_magic_sync();
+#endif
     }
 }
 

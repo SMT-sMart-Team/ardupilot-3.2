@@ -53,6 +53,9 @@ void LinuxRCOutput_PRU::set_freq(uint32_t chmask, uint16_t freq_hz)            /
             sharedMem_cmd->periodhi[chan_pru_map[i]][0]=tick;
         }
     }
+#ifdef  SET_MAGIC_SYNC
+    set_magic_sync();
+#endif
 }
 
 uint16_t LinuxRCOutput_PRU::get_freq(uint8_t ch)
@@ -68,6 +71,9 @@ void LinuxRCOutput_PRU::enable_ch(uint8_t ch)
 void LinuxRCOutput_PRU::disable_ch(uint8_t ch)
 {
     sharedMem_cmd->enmask &= !(1U<<chan_pru_map[ch]);
+#ifdef  SET_MAGIC_SYNC
+    set_magic_sync();
+#endif
 }
 
 void LinuxRCOutput_PRU::write(uint8_t ch, uint16_t period_us)
@@ -84,6 +90,9 @@ void LinuxRCOutput_PRU::write(uint8_t ch, uint16_t* period_us, uint8_t len)
     for(i=0;i<len;i++){
         write(ch+i,period_us[i]);
     }
+#ifdef  SET_MAGIC_SYNC
+    set_magic_sync();
+#endif
 }
 
 uint16_t LinuxRCOutput_PRU::read(uint8_t ch)
@@ -101,5 +110,22 @@ void LinuxRCOutput_PRU::read(uint16_t* period_us, uint8_t len)
         period_us[i] = sharedMem_cmd->hilo_read[chan_pru_map[i]][1]/TICK_PER_US;
     }
 }
+
+#ifdef  SET_MAGIC_SYNC
+void LinuxRCOutput_PRU::set_magic_sync(void)
+{
+	static char first_time = 1;
+	if (first_time == 1)
+	{
+       sharedMem_cmd->magic = PWM_CMD_MAGIC;
+       first_time = 0;
+	}
+	else
+	{
+		if (sharedMem_cmd->magic != PWM_REPLY_MAGIC )
+			printf("11111\n");
+	}
+}
+#endif
 
 #endif

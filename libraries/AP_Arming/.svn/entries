@@ -1,7 +1,7 @@
 10
 
 dir
-479
+463
 svn://115.28.107.37/Smart-bus/Dev/Code/Demo/ardupilot/libraries/AP_Arming
 svn://115.28.107.37
 
@@ -26,47 +26,13 @@ yanjie
 
 4da25ddb-b2b7-de4b-b677-2d9e5df4c821
 
-AP_Arming.cpp
-file
-
-
-
-
-2016-01-25T05:11:12.982683Z
-eb3bfadd797ace977abd06e2e25770ce
-2015-09-18T01:57:26.754028Z
-378
-yanjie
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-8490
-
 AP_Arming.h
 file
 
 
 
 
-2016-01-25T05:11:12.982683Z
+2016-01-11T02:52:41.552609Z
 322fa472c42c54980faa7e36a198aeaf
 2015-09-18T01:57:26.754028Z
 378
@@ -93,4 +59,38 @@ has-props
 
 
 2503
+
+AP_Arming.cpp
+file
+
+
+
+
+2016-01-11T02:52:41.552609Z
+eb3bfadd797ace977abd06e2e25770ce
+2015-09-18T01:57:26.754028Z
+378
+yanjie
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+8490
 

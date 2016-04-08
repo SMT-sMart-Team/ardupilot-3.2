@@ -80,7 +80,7 @@ void AP_Baro::calibrate()
     // reset the altitude offset when we calibrate. The altitude
     // offset is supposed to be for within a flight
     _alt_offset.set_and_save(0);
-
+    hal.console->println("enter calibrate....");
     // start by assuming all sensors are calibrated (for healthy() test)
     for (uint8_t i=0; i<_num_sensors; i++) {
         sensors[i].calibrated = true;
@@ -94,9 +94,10 @@ void AP_Baro::calibrate()
         uint32_t tstart = hal.scheduler->millis();
         do {
             update();
+            hal.console->printf("cnt %d\n",i);
             if (hal.scheduler->millis() - tstart > 500) {
                 hal.scheduler->panic(PSTR("PANIC: AP_Baro::read unsuccessful "
-                        "for more than 500ms in AP_Baro::calibrate [2]\r\n"));
+                        "-----for more than 500ms in AP_Baro::calibrate [2]\r\n"));
             }
             hal.scheduler->delay(10);
         } while (!healthy());
@@ -114,20 +115,26 @@ void AP_Baro::calibrate()
         uint32_t tstart = hal.scheduler->millis();
         do {
             update();
+            hal.console->println("0000000000000....");
             if (hal.scheduler->millis() - tstart > 500) {
                 hal.scheduler->panic(PSTR("PANIC: AP_Baro::read unsuccessful "
                         "for more than 500ms in AP_Baro::calibrate [3]\r\n"));
             }
         } while (!healthy());
         for (uint8_t i=0; i<_num_sensors; i++) {
+            hal.console->println("eeeeeeeeeeeee....");
             if (healthy(i)) {
+                hal.console->println("Rrrrrrrrrrrrrreeeeeeeeeeeee....");
                 sum_pressure[i] += sensors[i].pressure;
                 sum_temperature[i] += sensors[i].temperature;
                 count[i] += 1;
             }
         }
+        hal.console->println("ttttttttttttttttttttttttt");
         hal.scheduler->delay(100);
+        hal.console->println("-------------------------");
     }
+    hal.console->println("1111111111111111111111111");
     for (uint8_t i=0; i<_num_sensors; i++) {
         if (count[i] == 0) {
             sensors[i].calibrated = false;
@@ -137,6 +144,7 @@ void AP_Baro::calibrate()
         }
     }
 
+    hal.console->println("2222222222222222222222222");
     // panic if all sensors are not calibrated
     for (uint8_t i=0; i<_num_sensors; i++) {
         if (sensors[i].calibrated) {
@@ -290,6 +298,7 @@ void AP_Baro::init(void)
  */
 void AP_Baro::update(void)
 {
+    hal.console->println("enter baro update");
     for (uint8_t i=0; i<_num_drivers; i++) {
         drivers[i]->update();
     }

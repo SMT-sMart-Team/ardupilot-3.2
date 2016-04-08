@@ -40,6 +40,10 @@ void LinuxRCOutput_PRU::init(void* machtnicht)
     // all outputs default to 50Hz, the top level vehicle code
     // overrides this when necessary
     set_freq(0xFFFFFFFF, 50);
+    this->write(0,1000);
+    this->write(1,1000);
+    this->write(2,1000);
+    this->write(3,1000);
 }
 
 void LinuxRCOutput_PRU::set_freq(uint32_t chmask, uint16_t freq_hz)            //LSB corresponds to CHAN_1
@@ -124,9 +128,12 @@ int main(void)
         prutest.sharedMem_cmd->magic = PWM_CMD_MAGIC;
         printf("pru_test: cmd_magic: %08x\n", prutest.sharedMem_cmd->magic);
         prutest.enable_ch(0);
+        prutest.enable_ch(1);
+        prutest.enable_ch(2);
+        prutest.enable_ch(3);
         sleep(2);
-        printf("pru_test: enable CH0 cmd_magic: %08x\n", prutest.sharedMem_cmd->magic);
-        sleep(5);
+        printf("pru_test: enable CH0-CH3 cmd_magic: %08x\n", prutest.sharedMem_cmd->magic);
+        sleep(10);
     }
 }
 

@@ -1,7 +1,7 @@
 10
 
 dir
-479
+463
 svn://115.28.107.37/Smart-bus/Dev/Code/Demo/ardupilot/libraries
 svn://115.28.107.37
 
@@ -25,6 +25,27 @@ yanjie
 
 
 4da25ddb-b2b7-de4b-b677-2d9e5df4c821
+
+AP_Mount
+dir
+
+AP_Menu
+dir
+
+AP_PerfMon
+dir
+
+AC_AttitudeControl
+dir
+
+AP_HAL_AVR_SITL
+dir
+
+AP_Buffer
+dir
+
+AP_ServoRelayEvents
+dir
 
 AP_Camera
 dir
@@ -53,10 +74,10 @@ dir
 AP_Parachute
 dir
 
-AP_HAL_AVR
+AP_InertialNav
 dir
 
-AP_InertialNav
+AP_HAL_AVR
 dir
 
 GCS_MAVLink
@@ -122,10 +143,10 @@ dir
 AP_Relay
 dir
 
-StorageManager
+AP_Vehicle
 dir
 
-AP_Vehicle
+StorageManager
 dir
 
 APM_OBC
@@ -134,13 +155,13 @@ dir
 AP_Mission
 dir
 
+AP_Baro
+dir
+
 AP_OpticalFlow
 dir
 
 AP_HAL_Linux
-dir
-
-AP_Baro
 dir
 
 AP_ADC
@@ -152,10 +173,10 @@ dir
 PID
 dir
 
-AP_AHRS
+APM_Control
 dir
 
-APM_Control
+AP_AHRS
 dir
 
 AP_TECS
@@ -203,36 +224,15 @@ dir
 doc
 dir
 
-AP_GPS
+AP_Declination
 dir
 
-AP_Declination
+AP_GPS
 dir
 
 AP_SpdHgtControl
 dir
 
 AP_Airspeed
-dir
-
-AP_Mount
-dir
-
-AP_Menu
-dir
-
-AP_PerfMon
-dir
-
-AP_HAL_AVR_SITL
-dir
-
-AC_AttitudeControl
-dir
-
-AP_Buffer
-dir
-
-AP_ServoRelayEvents
 dir
 

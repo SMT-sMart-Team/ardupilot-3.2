@@ -114,6 +114,7 @@ void LinuxRCOutput_PRU::read(uint16_t* period_us, uint8_t len)
 #ifdef  SET_MAGIC_SYNC
 void LinuxRCOutput_PRU::set_magic_sync(void)
 {
+#if 0
 	static char first_time = 1;
 	if (first_time == 1)
 	{
@@ -125,6 +126,8 @@ void LinuxRCOutput_PRU::set_magic_sync(void)
 		if (sharedMem_cmd->magic != PWM_REPLY_MAGIC )
 			printf("11111\n");
 	}
+#endif
+    sharedMem_cmd->magic = PWM_CMD_MAGIC;
 }
 #endif
 

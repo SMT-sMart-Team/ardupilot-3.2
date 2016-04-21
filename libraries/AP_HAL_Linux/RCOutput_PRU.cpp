@@ -153,8 +153,8 @@ void LinuxRCOutput_PRU::rcout_keep_alive(void)
             // PRU should be dead
             if(time_out > (KEEP_ALIVE_TIME_OUT_HOST*50))
             {
+                ::printf("Warning: PRU didn't reply for more than %d seconds (50Hz: %d), should be dead!\n", KEEP_ALIVE_TIME_OUT_HOST, time_out);
                 time_out = 2;
-                ::printf("Error: PRU didn't reply for more than %d seconds, should be dead!\n", KEEP_ALIVE_TIME_OUT_HOST);
             }
         }
         else
@@ -174,17 +174,16 @@ void LinuxRCOutput_PRU::rcout_keep_alive(void)
         else if(PWM_CMD_KEEP_ALIVE == sharedMem_cmd->keep_alive)
         {
             sharedMem_cmd->time_out = KEEP_ALIVE_TIME_OUT_PRU; 
-            sharedMem_cmd->keep_alive = PWM_CMD_KEEP_ALIVE; 
             wait_pru_time++; 
             if(wait_pru_time > (PRU_POWER_UP_TIME*50))
             {
                 wait_pru_time = 0;
-                ::printf("Error: PRU still not wakeup...\n");
+                ::printf("Warning: PRU still not wakeup...\n");
             }
         }
         else
         {
-            ::printf("Error: unknown PRU keep alive code!\n");
+            ::printf("Warning: unknown PRU keep alive code!\n");
         }
     }
     else // time_out == 0

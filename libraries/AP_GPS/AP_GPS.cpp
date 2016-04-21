@@ -377,7 +377,7 @@ AP_GPS::update(void)
         {
             if(!((++prt_cnt)%1000))
             {
-        	    ::printf("... For now, GPS still not fixed 3D, so UART port will not be multiplexed\n");
+        	    //::printf("... For now, GPS still not fixed 3D, so UART port will not be multiplexed\n");
             }
         }
     }

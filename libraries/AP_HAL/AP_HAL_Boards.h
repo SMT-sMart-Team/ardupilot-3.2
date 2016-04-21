@@ -209,7 +209,7 @@
 // add by ZhaoYJ for monitoring PRU & HOST alive each other @2016-04-21
 #define KEEP_ALIVE_WITH_PRU 
 #define PRU_POWER_UP_TIME  30 // second
-#define KEEP_ALIVE_TIME_OUT_HOST 10 // second 
+#define KEEP_ALIVE_TIME_OUT_HOST 20 // second 
 #define KEEP_ALIVE_TIME_OUT_PRU 1 // second
 
 // #define HAL_INS_DEFAULT HAL_INS_MPU9255

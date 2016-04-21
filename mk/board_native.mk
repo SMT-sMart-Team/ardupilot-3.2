@@ -97,6 +97,7 @@ $(SKETCHELF):	$(SKETCHOBJS) $(LIBOBJS)
 	$(RULEHDR)
 	$(v)$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)
 	$(v)cp $(SKETCHELF) .
+	@rm -rf $(BUILDROOT)
 	@echo "Firmware is in $(BUILDELF)"
 
 #

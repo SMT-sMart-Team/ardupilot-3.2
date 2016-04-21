@@ -1013,6 +1013,10 @@ static void throttle_loop()
     // check auto_armed status
     update_auto_armed();
 
+    // add By ZhaoYJ 
+    // check if rcout module is alive 
+    check_rcout_alive();
+
 #if FRAME_CONFIG == HELI_FRAME
     // update rotor speed
     heli_update_rotor_speed_targets();

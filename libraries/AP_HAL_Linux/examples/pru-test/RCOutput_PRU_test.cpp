@@ -17,6 +17,7 @@
 #include <linux/spi/spidev.h>
 #include <sys/mman.h>
 #include <signal.h>
+#include <time.h>
 
 
 #define PWM_CHAN_COUNT 12
@@ -39,7 +40,7 @@ void LinuxRCOutput_PRU::init(void* machtnicht)
 
     // all outputs default to 50Hz, the top level vehicle code
     // overrides this when necessary
-    set_freq(0xFFFFFFFF, 50);
+    set_freq(0xFFFFFFFF, 400);
     this->write(0,1000);
     this->write(1,1000);
     this->write(2,1000);
@@ -107,33 +108,31 @@ void LinuxRCOutput_PRU::read(uint16_t* period_us, uint8_t len)
 
 LinuxRCOutput_PRU prutest;
 
+
+
 int main(void)
 {
+    unsigned int ii = 0;
     printf("enter pru_test...\n");
     prutest.init(NULL);
 
     // first write magic head to pwmpru, then wait for resp
     // then change mask for enable
-    while(1)
-    {
-
-        printf("***************************************\n");
-        printf("pru_test: check cmd_magic\n");
-        prutest.sharedMem_cmd->magic = PWM_CMD_MAGIC;
-        printf("pru_test: cmd_magic: %08x\n", prutest.sharedMem_cmd->magic);
-        sleep(2);
-        printf("pru_test: cmd_magic: %08x\n", prutest.sharedMem_cmd->magic);
-
-        printf("pru_test: change mask cmd_magic\n");
-        prutest.sharedMem_cmd->magic = PWM_CMD_MAGIC;
-        printf("pru_test: cmd_magic: %08x\n", prutest.sharedMem_cmd->magic);
         prutest.enable_ch(0);
         prutest.enable_ch(1);
         prutest.enable_ch(2);
         prutest.enable_ch(3);
-        sleep(2);
-        printf("pru_test: enable CH0-CH3 cmd_magic: %08x\n", prutest.sharedMem_cmd->magic);
-        sleep(10);
+        prutest.sharedMem_cmd->magic = PWM_CMD_MAGIC;
+        srand((unsigned int)time(NULL));
+    while(1)
+    {
+
+        for(ii = 0; ii < MAX_PWMS; ii++)
+        {
+            prutest.write(ii, 1300); //rand()%1950);
+        }
+        prutest.sharedMem_cmd->magic = PWM_CMD_MAGIC;
+        // usleep(200);
     }
 }
 

@@ -206,6 +206,12 @@
 // add by ZhaoYJ for merging APM 3.3.2 analogin_iio @2016-01-25
 #define SMT_BATT_MONITOR_ANIN_IIO
 
+// add by ZhaoYJ for monitoring PRU & HOST alive each other @2016-04-21
+#define KEEP_ALIVE_WITH_PRU 
+#define PRU_POWER_UP_TIME  30 // second
+#define KEEP_ALIVE_TIME_OUT_HOST 10 // second 
+#define KEEP_ALIVE_TIME_OUT_PRU 1 // second
+
 // #define HAL_INS_DEFAULT HAL_INS_MPU9255
 // #define HAL_BARO_DEFAULT HAL_BARO_MS5611_SPI
 // #define HAL_COMPASS_DEFAULT HAL_COMPASS_HMC5843

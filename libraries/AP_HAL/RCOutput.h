@@ -86,6 +86,7 @@ public:
     */
     virtual void     set_magic_sync(void) {}
 #endif
+    virtual void     rcout_keep_alive(void) {}
 };
 
 #endif // __AP_HAL_RC_OUTPUT_H__

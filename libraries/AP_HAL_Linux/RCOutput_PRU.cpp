@@ -118,4 +118,69 @@ void LinuxRCOutput_PRU::set_magic_sync(void)
 }
 #endif
 
+// will be invoked 50Hz, meanwhile PRU will check alive 1Hz
+void LinuxRCOutput_PRU::rcout_keep_alive(void)
+{
+#ifdef KEEP_ALIVE_WITH_PRU
+    static unsigned int time_out = 0;
+    static unsigned int wait_pru_time = 0;
+    // check keep alive with PRU (first time: config timeout to PRU)
+    if(time_out > 1)
+    {
+        // reply alive
+        if(PWM_REPLY_KEEP_ALIVE == sharedMem_cmd->keep_alive)
+        {
+            // cmd alive
+            sharedMem_cmd->keep_alive = PWM_CMD_KEEP_ALIVE; 
+            time_out = 2;
+        }
+        else if(PWM_CMD_KEEP_ALIVE == sharedMem_cmd->keep_alive)
+        {
+            time_out++;
+            // PRU should be dead
+            if(time_out > (KEEP_ALIVE_TIME_OUT_HOST*50))
+            {
+                time_out = 2;
+                ::printf("Error: PRU didn't reply for more than %d seconds, should be dead!\n", KEEP_ALIVE_TIME_OUT_HOST);
+            }
+        }
+        else
+        {
+            ::printf("Error: unknown PRU keep alive code!\n");
+        }
+    }
+    else if(1 == time_out) // wait for 1st PRU reply (PRU wake up)
+    {
+        // reply alive
+        if(PWM_REPLY_KEEP_ALIVE == sharedMem_cmd->keep_alive)
+        {
+            // cmd alive
+            sharedMem_cmd->keep_alive = PWM_CMD_KEEP_ALIVE; 
+            time_out = 2;
+        }
+        else if(PWM_CMD_KEEP_ALIVE == sharedMem_cmd->keep_alive)
+        {
+            sharedMem_cmd->time_out = KEEP_ALIVE_TIME_OUT_PRU; 
+            sharedMem_cmd->keep_alive = PWM_CMD_KEEP_ALIVE; 
+            wait_pru_time++; 
+            if(wait_pru_time > (PRU_POWER_UP_TIME*50))
+            {
+                wait_pru_time = 0;
+                ::printf("Error: PRU still not wakeup...\n");
+            }
+        }
+        else
+        {
+            ::printf("Error: unknown PRU keep alive code!\n");
+        }
+    }
+    else // time_out == 0
+    {
+        sharedMem_cmd->time_out = KEEP_ALIVE_TIME_OUT_PRU; 
+        sharedMem_cmd->keep_alive = PWM_CMD_KEEP_ALIVE; 
+        time_out = 1;
+    }
+#endif
+}
+
 #endif

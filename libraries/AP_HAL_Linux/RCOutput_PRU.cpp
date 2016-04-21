@@ -141,13 +141,14 @@ void LinuxRCOutput_PRU::rcout_keep_alive(void)
     if(time_out > 1)
     {
         // reply alive
-        if(PWM_REPLY_KEEP_ALIVE == sharedMem_cmd->keep_alive)
+        if(PWM_REPLY_KEEP_ALIVE == sharedMem_cmd->keep_alive_reply)
         {
-            // cmd alive
-            sharedMem_cmd->keep_alive = PWM_CMD_KEEP_ALIVE; 
+            // make sure write ok cmd alive
+            sharedMem_cmd->keep_alive_reply = 0xFFFF; 
+
             time_out = 2;
         }
-        else if(PWM_CMD_KEEP_ALIVE == sharedMem_cmd->keep_alive)
+        else
         {
             time_out++;
             // PRU should be dead
@@ -157,23 +158,23 @@ void LinuxRCOutput_PRU::rcout_keep_alive(void)
                 time_out = 2;
             }
         }
-        else
-        {
-            ::printf("Error: unknown PRU keep alive code!\n");
-        }
+
+        // make sure write ok
+        sharedMem_cmd->keep_alive_cmd = PWM_CMD_KEEP_ALIVE; 
+        sharedMem_cmd->keep_alive_cmd = PWM_CMD_KEEP_ALIVE; 
+        sharedMem_cmd->keep_alive_cmd = PWM_CMD_KEEP_ALIVE; 
     }
     else if(1 == time_out) // wait for 1st PRU reply (PRU wake up)
     {
         // reply alive
-        if(PWM_REPLY_KEEP_ALIVE == sharedMem_cmd->keep_alive)
+        if(PWM_REPLY_KEEP_ALIVE == sharedMem_cmd->keep_alive_reply)
         {
             // cmd alive
-            sharedMem_cmd->keep_alive = PWM_CMD_KEEP_ALIVE; 
             time_out = 2;
         }
-        else if(PWM_CMD_KEEP_ALIVE == sharedMem_cmd->keep_alive)
+        else
         {
-            sharedMem_cmd->time_out = KEEP_ALIVE_TIME_OUT_PRU; 
+            sharedMem_cmd->time_out = KEEP_ALIVE_TIME_OUT_MS_PRU; 
             wait_pru_time++; 
             if(wait_pru_time > (PRU_POWER_UP_TIME*50))
             {
@@ -181,15 +182,15 @@ void LinuxRCOutput_PRU::rcout_keep_alive(void)
                 ::printf("Warning: PRU still not wakeup...\n");
             }
         }
-        else
-        {
-            ::printf("Warning: unknown PRU keep alive code!\n");
-        }
+        // make sure write ok
+        sharedMem_cmd->keep_alive_cmd = PWM_CMD_KEEP_ALIVE; 
+        sharedMem_cmd->keep_alive_cmd = PWM_CMD_KEEP_ALIVE; 
+        sharedMem_cmd->keep_alive_cmd = PWM_CMD_KEEP_ALIVE; 
     }
     else // time_out == 0
     {
-        sharedMem_cmd->time_out = KEEP_ALIVE_TIME_OUT_PRU; 
-        sharedMem_cmd->keep_alive = PWM_CMD_KEEP_ALIVE; 
+        sharedMem_cmd->time_out = KEEP_ALIVE_TIME_OUT_MS_PRU; 
+        sharedMem_cmd->keep_alive_cmd = PWM_CMD_KEEP_ALIVE; 
         time_out = 1;
     }
 #endif

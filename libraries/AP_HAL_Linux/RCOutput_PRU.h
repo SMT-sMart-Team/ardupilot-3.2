@@ -41,7 +41,8 @@ private:
 	    uint16_t enmask;	/* enable mask */
 	    uint32_t periodhi[MAX_PWMS][2];
         uint32_t hilo_read[MAX_PWMS][2];
-        uint16_t keep_alive; // flag, add By ZhaoYJ 
+        uint16_t keep_alive_cmd; // flag, add By ZhaoYJ 
+        uint16_t keep_alive_reply; // flag, add By ZhaoYJ 
         uint16_t time_out; // second, add By ZhaoYJ 
         // uint32_t magic;
         // uint32_t enmask;     /* enable mask */

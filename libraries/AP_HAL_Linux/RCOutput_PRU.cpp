@@ -141,13 +141,13 @@ void LinuxRCOutput_PRU::rcout_keep_alive(void)
     if(time_out > 1)
     {
         // reply alive
-        if(PWM_REPLY_KEEP_ALIVE == sharedMem_cmd->keep_alive)
+        if(PWM_REPLY_KEEP_ALIVE == (sharedMem_cmd->keep_alive & 0xFFFF))
         {
             // cmd alive
             sharedMem_cmd->keep_alive = PWM_CMD_KEEP_ALIVE; 
             time_out = 2;
         }
-        else if(PWM_CMD_KEEP_ALIVE == sharedMem_cmd->keep_alive)
+        else if(PWM_CMD_KEEP_ALIVE == (sharedMem_cmd->keep_alive & 0xFFFF))
         {
             time_out++;
             // PRU should be dead
@@ -165,13 +165,13 @@ void LinuxRCOutput_PRU::rcout_keep_alive(void)
     else if(1 == time_out) // wait for 1st PRU reply (PRU wake up)
     {
         // reply alive
-        if(PWM_REPLY_KEEP_ALIVE == sharedMem_cmd->keep_alive)
+        if(PWM_REPLY_KEEP_ALIVE == (sharedMem_cmd->keep_alive & 0xFFFF))
         {
             // cmd alive
             sharedMem_cmd->keep_alive = PWM_CMD_KEEP_ALIVE; 
             time_out = 2;
         }
-        else if(PWM_CMD_KEEP_ALIVE == sharedMem_cmd->keep_alive)
+        else if(PWM_CMD_KEEP_ALIVE == (sharedMem_cmd->keep_alive & 0xFFFF))
         {
             sharedMem_cmd->time_out = KEEP_ALIVE_TIME_OUT_PRU; 
             wait_pru_time++; 

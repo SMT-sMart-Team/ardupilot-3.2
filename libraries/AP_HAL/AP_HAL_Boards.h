@@ -210,7 +210,7 @@
 #define KEEP_ALIVE_WITH_PRU 
 #define PRU_POWER_UP_TIME  30 // second
 #define KEEP_ALIVE_TIME_OUT_HOST 20 // second 
-#define KEEP_ALIVE_TIME_OUT_MS_PRU 20 // micro second
+#define KEEP_ALIVE_TIME_OUT_PRU 75 // 75*20ms
 
 // #define HAL_INS_DEFAULT HAL_INS_MPU9255
 // #define HAL_BARO_DEFAULT HAL_BARO_MS5611_SPI

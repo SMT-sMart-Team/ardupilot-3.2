@@ -129,10 +129,10 @@ int main(void)
 
         for(ii = 0; ii < MAX_PWMS; ii++)
         {
-            prutest.write(ii, 1300); //rand()%1950);
+            prutest.write(chan_pru_map[ii], rand()%1950);
         }
         prutest.sharedMem_cmd->magic = PWM_CMD_MAGIC;
-        // usleep(200);
+        usleep(200);
     }
 }
 

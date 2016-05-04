@@ -24,8 +24,21 @@
 
 extern const AP_HAL::HAL& hal;
 
+#define RANGE_CHANGE                                    0
+#define DLPF_CHANGE                                     0
+
+#if DLPF_CHANGE
+//register addr use it to config accel filter delaytime and bandwidth
+#define MPUREG_ACCEL_CONFIG2                                     0x1D
+#endif
+
+#if RANGE_CHANGE
+//accel as 8192 LSB/mg at scale factor of +/- 4g (AFS_SEL==1)
+#define MPU9250_ACCEL_SCALE_1G    (GRAVITY_MSS / 8192.0f)
+#else
 // MPU6000 accelerometer scaling
 #define MPU9250_ACCEL_SCALE_1G    (GRAVITY_MSS / 4096.0f)
+#endif
 
 #define MPUREG_XG_OFFS_TC                               0x00
 #define MPUREG_YG_OFFS_TC                               0x01
@@ -157,15 +170,25 @@ extern const AP_HAL::HAL& hal;
 #define BITS_DLPF_CFG_2100HZ_NOLPF              0x07
 #define BITS_DLPF_CFG_MASK                              0x07
 
+
+
+
+#if RANGE_CHANGE
+/*
+ *  PS-MPU-9250A-00.pdf, page 8, lists LSB sensitivity of
+ *  gyro as 131 LSB/DPS at scale factor of +/- 250dps (FS_SEL==0)
+ */
+#define GYRO_SCALE (0.0174532f / 131.0f)
+#else
 /*
  *  PS-MPU-9250A-00.pdf, page 8, lists LSB sensitivity of
  *  gyro as 16.4 LSB/DPS at scale factor of +/- 2000dps (FS_SEL==3)
  */
 #define GYRO_SCALE (0.0174532f / 16.4f)
-
+#endif
 /*
  *  PS-MPU-9250A-00.pdf, page 9, lists LSB sensitivity of
- *  accel as 4096 LSB/mg at scale factor of +/- 8g (AFS_SEL==2)
+ *  accel as 8192 LSB/mg at scale factor of +/- 4g (AFS_SEL==1)
  *
  *  See note below about accel scaling of engineering sample MPUXk
  *  variants however
@@ -460,16 +483,27 @@ bool AP_InertialSensor_MPU9250::_hardware_init(void)
     _default_filter_hz = _default_filter();
 
     // used a fixed filter of 42Hz on the sensor, then filter using
-    // the 2-pole software filter
+    // the 2-pole software filter delay 5.9 ms
     _register_write(MPUREG_CONFIG, BITS_DLPF_CFG_42HZ);
+
+#if DLPF_CHANGE
+    // used a fixed filter of 184Hz on the sensor, then filter using
+    // the 2-pole software filter Accelerometer delay 5.80
+    _register_write(MPUREG_ACCEL_CONFIG2, 0x01);
+#endif
 
     // set sample rate to 1kHz, and use the 2 pole filter to give the
     // desired rate
     _register_write(MPUREG_SMPLRT_DIV, MPUREG_SMPLRT_1000HZ);
+#if RANGE_CHANGE    
+    _register_write(MPUREG_GYRO_CONFIG, BITS_GYRO_FS_250DPS);  // Gyro scale 250º/s
+    // RM-MPU-9250A-00.pdf, pg. 15, select accel full scale 4g
+    _register_write(MPUREG_ACCEL_CONFIG,1<<3);
+#else
     _register_write(MPUREG_GYRO_CONFIG, BITS_GYRO_FS_2000DPS);  // Gyro scale 2000º/s
-
     // RM-MPU-9250A-00.pdf, pg. 15, select accel full scale 8g
     _register_write(MPUREG_ACCEL_CONFIG,2<<3);
+#endif
 
     // configure interrupt to fire when new data arrives
     _register_write(MPUREG_INT_ENABLE, BIT_RAW_RDY_EN);

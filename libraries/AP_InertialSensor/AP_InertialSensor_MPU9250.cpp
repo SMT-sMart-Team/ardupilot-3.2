@@ -298,6 +298,7 @@ bool AP_InertialSensor_MPU9250::update( void )
     accel *= MPU9250_ACCEL_SCALE_1G;
     gyro *= GYRO_SCALE;
 
+#ifndef SMT_NEW_SENSORS_BOARD
     // rotate for bbone default
     accel.rotate(ROTATION_ROLL_180_YAW_90);
     gyro.rotate(ROTATION_ROLL_180_YAW_90);
@@ -314,6 +315,8 @@ bool AP_InertialSensor_MPU9250::update( void )
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_BBBMINI
     accel.rotate(ROTATION_ROLL_180);
     gyro.rotate(ROTATION_ROLL_180);
+#endif
+
 #endif
 
     _rotate_and_offset_gyro(_gyro_instance, gyro);

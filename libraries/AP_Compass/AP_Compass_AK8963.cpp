@@ -500,13 +500,8 @@ bool AP_Compass_AK8963::read()
     // a noop on most boards
     _field[0].rotate(MAG_BOARD_ORIENTATION);
 
-#ifdef SMT_NEW_SENSORS_BOARD
-    _field[0].rotate(ROTATION_ROLL_180_YAW_90);
-#else
-
     // add user selectable orientation
     _field[0].rotate((enum Rotation)_orientation[0].get());
-#endif
 
     if (!_external[0]) {
         // and add in AHRS_ORIENTATION setting if not an external compass

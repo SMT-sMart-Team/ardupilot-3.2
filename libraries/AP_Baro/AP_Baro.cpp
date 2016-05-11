@@ -286,6 +286,14 @@ void AP_Baro::init(void)
                                         true);
         _num_drivers = 1;
     }
+#elif HAL_BARO_DEFAULT == HAL_BARO_MS5803_SPI
+    {
+        drivers[0] = new AP_Baro_MS5803(*this,
+                                        new AP_SerialBus_SPI_MS5803(AP_HAL::SPIDevice_MS5803,
+                                                             AP_HAL::SPIDeviceDriver::SPI_SPEED_HIGH),
+                                        true);
+        _num_drivers = 1;
+    }
 #endif    
     if (_num_drivers == 0 || _num_sensors == 0 || drivers[0] == NULL) {
         hal.scheduler->panic(PSTR("Baro: unable to initialise driver"));

@@ -24,15 +24,14 @@
 
 extern const AP_HAL::HAL& hal;
 
-#define RANGE_CHANGE                                    0
-#define DLPF_CHANGE                                     0
+#define RANGE_CHANGE                                    
+// #define DLPF_CHANGE                                     
+#define DISABLE_DLPF
 
-#if DLPF_CHANGE
 //register addr use it to config accel filter delaytime and bandwidth
 #define MPUREG_ACCEL_CONFIG2                                     0x1D
-#endif
 
-#if RANGE_CHANGE
+#ifdef RANGE_CHANGE
 //accel as 8192 LSB/mg at scale factor of +/- 4g (AFS_SEL==1)
 #define MPU9250_ACCEL_SCALE_1G    (GRAVITY_MSS / 8192.0f)
 #else
@@ -173,7 +172,7 @@ extern const AP_HAL::HAL& hal;
 
 
 
-#if RANGE_CHANGE
+#ifdef RANGE_CHANGE
 /*
  *  PS-MPU-9250A-00.pdf, page 8, lists LSB sensitivity of
  *  gyro as 131 LSB/DPS at scale factor of +/- 250dps (FS_SEL==0)
@@ -484,19 +483,30 @@ bool AP_InertialSensor_MPU9250::_hardware_init(void)
 
     // used a fixed filter of 42Hz on the sensor, then filter using
     // the 2-pole software filter delay 5.9 ms
+#ifdef DISABLE_DLPF
+    _register_write(MPUREG_CONFIG, BITS_DLPF_CFG_256HZ_NOLPF2);
+#else
     _register_write(MPUREG_CONFIG, BITS_DLPF_CFG_42HZ);
+#endif
 
-#if DLPF_CHANGE
+#ifdef DLPF_CHANGE
     // used a fixed filter of 184Hz on the sensor, then filter using
     // the 2-pole software filter Accelerometer delay 5.80
     _register_write(MPUREG_ACCEL_CONFIG2, 0x01);
+#elif defined(DISABLE_DLPF)
+    _register_write(MPUREG_ACCEL_CONFIG2, 0x1 << 3);
 #endif
 
     // set sample rate to 1kHz, and use the 2 pole filter to give the
     // desired rate
     _register_write(MPUREG_SMPLRT_DIV, MPUREG_SMPLRT_1000HZ);
-#if RANGE_CHANGE    
+#ifdef RANGE_CHANGE    
+
+#ifdef DISABLE_DLPF
+    _register_write(MPUREG_GYRO_CONFIG, 0x3 | BITS_GYRO_FS_250DPS);  // Gyro scale 250º/s
+#else
     _register_write(MPUREG_GYRO_CONFIG, BITS_GYRO_FS_250DPS);  // Gyro scale 250º/s
+#endif
     // RM-MPU-9250A-00.pdf, pg. 15, select accel full scale 4g
     _register_write(MPUREG_ACCEL_CONFIG,1<<3);
 #else

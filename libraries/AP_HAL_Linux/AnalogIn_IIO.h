@@ -1,5 +1,7 @@
 #pragma once
 
+#ifndef ANALOGIN_IIO_H
+#define ANALOGIN_IIO_H
 #include "AP_HAL_Linux.h"
 #include <AP_ADC.h>
 
@@ -14,7 +16,11 @@
 #define IIO_ANALOG_IN_COUNT 8
 // Note that echo BB-ADC cape should be loaded
 #define IIO_ANALOG_IN_DIR "/sys/bus/iio/devices/iio:device0/"
+// add by ZhaoYJ @2016-05-12
+#define BOARD_VOLT_PIN 7
+
 #define BBB_VOLTAGE_SCALING 0.00142602816
+
 #else
 #define IIO_ANALOG_IN_COUNT 8
 #define IIO_ANALOG_IN_DIR "/sys/bus/iio/devices/iio:device0/"
@@ -51,11 +57,20 @@ private:
 
 class AnalogIn_IIO : public AP_HAL::AnalogIn {
 public:
+
+    // add by ZhaoYJ for board voltage monitoring @2016-05-12
+    AP_HAL::AnalogSource* _board_volt_source;
+
     AnalogIn_IIO();
     void init(void *);
     AP_HAL::AnalogSource* channel(int16_t n);
 
     // we don't yet know how to get the board voltage
+#ifdef SMT_NEW_SENSORS_BOARD
+    float board_voltage(void);
+#else
     float board_voltage(void) { return 0.0f; }
+#endif
 
 };
+#endif

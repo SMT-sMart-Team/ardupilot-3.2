@@ -4,6 +4,20 @@
 #if CONFIG_HAL_BOARD == HAL_BOARD_LINUX
 #include "AnalogIn_IIO.h"
 
+// add by ZhaoYJ @2016-05-12
+#ifdef SMT_NEW_SENSORS_BOARD
+// #define IIO_DEBUG
+float AIScales[IIO_ANALOG_IN_COUNT] = {
+    0.00131836,
+    0.00131836,
+    0.00131836,
+    0.00131836,
+    0.00131836,
+    0.00629883,
+    0.00087891,
+    0.00087891
+    };
+#endif
 
 extern const AP_HAL::HAL& hal;
 
@@ -53,6 +67,8 @@ void AnalogSource_IIO::init_pins(void)
  */
 void AnalogSource_IIO::select_pin(void)
 {
+    if(_pin > IIO_ANALOG_IN_COUNT)
+        return;
     _pin_fd = fd_analog_sources[_pin];
 }
 
@@ -114,12 +130,23 @@ float AnalogSource_IIO::read_latest()
         return 0;
     }
 
+    if(_pin > IIO_ANALOG_IN_COUNT)
+        return 0;
+
     memset(sbuf, 0, sizeof(sbuf));
     pread(_pin_fd, sbuf, sizeof(sbuf)-1, 0);
 #if CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_PXF
+#ifdef SMT_NEW_SENSORS_BOARD
+    _latest = atoi(sbuf) * AIScales[_pin];
+#else
     _latest = atoi(sbuf) * BBB_VOLTAGE_SCALING;
+#endif
 #else
     _latest = atoi(sbuf);
+#endif
+
+#ifdef IIO_DEBUG
+    printf(" pin: %d, orig: %d, scale: %f, latest: %f\n", _pin, atoi(sbuf), AIScales[_pin], _latest);
 #endif
     _sum_value += _latest;
     _sum_count++;
@@ -144,6 +171,9 @@ void AnalogSource_IIO::set_pin(uint8_t pin)
     if (_pin == pin) {
         return;
     }
+
+    if(_pin > IIO_ANALOG_IN_COUNT)
+        return;
 
     hal.scheduler->suspend_timer_procs();
     _pin = pin;
@@ -173,5 +203,26 @@ void AnalogIn_IIO::init(void *)
 AP_HAL::AnalogSource* AnalogIn_IIO::channel(int16_t pin) {
     return new AnalogSource_IIO(pin, 0);
 }
+
+#ifdef SMT_NEW_SENSORS_BOARD
+float AnalogIn_IIO::board_voltage(void)
+{
+    static char first = 1;
+    if(first)
+    {
+        // init board voltage pin
+        _board_volt_source = channel(BOARD_VOLT_PIN);
+        first = 0;
+    }
+
+    _board_volt_source->set_pin(BOARD_VOLT_PIN);
+#ifdef IIO_DEBUG
+    printf(" board volt: %f\n", _board_volt_source->voltage_average());
+#endif
+
+    return _board_volt_source->voltage_average();
+
+}
+#endif
 
 #endif // CONFIG_HAL_BOARD

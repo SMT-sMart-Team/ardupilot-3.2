@@ -25,7 +25,8 @@
 extern const AP_HAL::HAL& hal;
 
 #define RANGE_CHANGE                                    
-#define DLPF_CHANGE                                     
+// #define DLPF_CHANGE                                     
+#define DISABLE_DLPF
 
 //register addr use it to config accel filter delaytime and bandwidth
 #define MPUREG_ACCEL_CONFIG2                                     0x1D
@@ -485,19 +486,29 @@ bool AP_InertialSensor_MPU9250::_hardware_init(void)
 
     // used a fixed filter of 42Hz on the sensor, then filter using
     // the 2-pole software filter delay 5.9 ms
+#ifdef DISABLE_DLPF
+    _register_write(MPUREG_CONFIG, BITS_DLPF_CFG_256HZ_NOLPF2);
+#else
     _register_write(MPUREG_CONFIG, BITS_DLPF_CFG_42HZ);
+#endif
 
 #ifdef DLPF_CHANGE
     // used a fixed filter of 184Hz on the sensor, then filter using
     // the 2-pole software filter Accelerometer delay 5.80
-    _register_write(MPUREG_ACCEL_CONFIG2, 0x01);
+    _register_write(MPUREG_ACCEL_CONFIG2, 0x1);
+#elif defined (DISABLE_DLPF)
+    _register_write(MPUREG_ACCEL_CONFIG2, 0x1 << 3);
 #endif
 
     // set sample rate to 1kHz, and use the 2 pole filter to give the
     // desired rate
     _register_write(MPUREG_SMPLRT_DIV, MPUREG_SMPLRT_1000HZ);
 #ifdef RANGE_CHANGE    
+#ifdef DISABLE_DLPF
+    _register_write(MPUREG_GYRO_CONFIG, 0x3 | BITS_GYRO_FS_250DPS);  // Gyro scale 250º/s
+#else
     _register_write(MPUREG_GYRO_CONFIG, BITS_GYRO_FS_250DPS);  // Gyro scale 250º/s
+#endif
     // RM-MPU-9250A-00.pdf, pg. 15, select accel full scale 4g
     _register_write(MPUREG_ACCEL_CONFIG,1<<3);
 #else

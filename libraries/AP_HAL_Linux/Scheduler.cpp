@@ -299,7 +299,7 @@ void *LinuxScheduler::_rcin_thread(void)
     }
     while (true) {
         _microsleep(10000);
-
+        
         ((LinuxRCInput *)hal.rcin)->_timer_tick();
     }
     return NULL;
@@ -351,6 +351,9 @@ void *LinuxScheduler::_io_thread(void)
 
         // run registered IO processes
         _run_io();
+
+        // AB ZhaoYJ for keep alive with PRU-pwm
+        hal.rcout->rcout_keep_alive();
     }
     return NULL;
 }

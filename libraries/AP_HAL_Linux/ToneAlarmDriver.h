@@ -110,6 +110,38 @@
 
 #define TONE_NUMBER_OF_TUNES 11
 
+#ifdef SMT_GPIO_ALARM
+class Linux::ToneAlarm{
+public:
+	ToneAlarm();
+	void set_tune(uint8_t tone);
+	bool init();
+	bool is_tune_comp();
+	void stop();
+	bool play();
+	bool set_note();
+	bool init_tune();
+
+private:
+	bool tune_comp;
+	static const char tunes[TONE_NUMBER_OF_TUNES];
+	bool tune_changed;
+	uint8_t default_oct;
+	uint8_t default_dur;
+	uint16_t bpm;
+	uint16_t wholenote;
+	uint16_t cur_note;
+	uint16_t duration;
+	int32_t prev_tune_num;
+	uint32_t prev_time;
+	int32_t period_fd;
+	int32_t duty_fd;
+	int32_t run_fd;
+	int8_t tune_num;
+	uint8_t tune_pos;
+};
+#else
+
 class Linux::ToneAlarm{
 public:
 	ToneAlarm();
@@ -140,5 +172,6 @@ private:
 	int8_t tune_num;
 	uint8_t tune_pos;
 };
+#endif
 
 #endif

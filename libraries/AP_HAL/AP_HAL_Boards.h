@@ -216,6 +216,9 @@
 // add by ZhaoYJ for test SMT new board @2016-05-09
 #define SMT_NEW_SENSORS_BOARD 
 
+// add by ZhaoYJ for test alarm on SMT new board @2016-05-18
+#define SMT_GPIO_ALARM
+
 // #define HAL_INS_DEFAULT HAL_INS_MPU9255
 // #define HAL_BARO_DEFAULT HAL_BARO_MS5611_SPI
 // #define HAL_COMPASS_DEFAULT HAL_COMPASS_HMC5843

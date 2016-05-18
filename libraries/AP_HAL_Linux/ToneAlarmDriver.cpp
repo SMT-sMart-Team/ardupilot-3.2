@@ -15,6 +15,8 @@
 #ifdef SMT_GPIO_ALARM
 #include "GPIO.h"
 
+#define TIME16_SUB(x, y) ((x >=y)?(x - y):(0xFFFF - y + x))
+
 #define ALARM_GPIO BBB_P8_36
 #define ALARM_ON  1
 #define ALARM_OFF 0 
@@ -41,7 +43,10 @@ const char ToneAlarm::tunes[TONE_NUMBER_OF_TUNES] = {
 ToneAlarm::ToneAlarm()
 {
     tune_num = -1;                    //initialy no tune to play
-    tune_pos = 0;
+    tune_comp = true;
+    first_time = true;
+    prev_time = 0;
+    duration = 0;
 }
 
 bool ToneAlarm::init()
@@ -74,16 +79,15 @@ void ToneAlarm::stop()
 bool ToneAlarm::play()
 {
     uint16_t cur_time = hal.scheduler->millis();
-    if(tune_num != prev_tune_num){
-        tune_changed = true;
-        return true;
-    }
-    if(cur_note != 0){
-        cur_note =0;
+
+    if(first_time){
+        first_time = false;
         prev_time = cur_time;
     }
-    if((cur_time - prev_time) > duration){
+    if(TIME16_SUB(cur_time, prev_time) > (duration*1000)){
         stop();
+        tune_comp = true;
+        tune_num = -1;
         return true;
     }
     return false;
@@ -94,12 +98,17 @@ bool ToneAlarm::set_note(){
     {
         // first, get note duration, if available
         duration = tunes[tune_num];
+        return true;
     }
+
+    return false;
 
 }
 
 bool ToneAlarm::init_tune(){
 
+    tune_comp = false;
+    first_time = true;
     return true;
 }
 #else

@@ -75,7 +75,7 @@ void LinuxRCInput_PRU::_timer_tick()
             memcpy((void*)dst, (void*)src, len*2);
 
             // 2
-            dst = (uint16_t *)&rb_local.buffer;
+            dst = (uint16_t *)rb_local.buffer;
             src = (uint16_t *)ring_buffer;
             len = rb_local.ring_tail;
             memcpy((void*)dst, (void*)src, len*2);

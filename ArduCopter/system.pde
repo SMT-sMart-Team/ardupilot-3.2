@@ -382,7 +382,7 @@ static void update_auto_armed()
 // check if rcout module is alive 
 static void check_rcout_alive()
 {
-    hal.rcout->rcout_keep_alive();
+    // hal.rcout->rcout_keep_alive();
 }
 
 static void check_usb_mux(void)

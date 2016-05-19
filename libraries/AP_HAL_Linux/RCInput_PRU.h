@@ -22,7 +22,7 @@ public:
  private:
     static const unsigned int NUM_RING_ENTRIES=300;
     // shared ring buffer with the PRU which records pin transitions
-    struct ring_buffer {
+    struct rb{
         volatile uint16_t ring_head; // owned by ARM CPU
         volatile uint16_t ring_tail; // owned by the PRU
         struct {
@@ -30,7 +30,11 @@ public:
                uint16_t delta_t;
         } buffer[NUM_RING_ENTRIES];
     };
-    volatile struct ring_buffer *ring_buffer;
+    volatile struct rb *ring_buffer;
+
+#ifdef SMT_NEW_RCIN
+    struct rb rb_local;
+#endif
 
     // time spent in the low state
     uint16_t _s0_time;

@@ -18,6 +18,8 @@
 #include "sbus.h"
 #include "dsm.h"
 
+// #define DEBUG_PPM
+
 extern const AP_HAL::HAL& hal;
 
 using namespace Linux;
@@ -44,6 +46,9 @@ uint8_t LinuxRCInput::num_channels()
 
 uint16_t LinuxRCInput::read(uint8_t ch) 
 {
+#ifdef DEBUG_PPM
+    static uint16_t last[16];
+#endif
     new_rc_input = false;
     if (_override[ch]) {
         return _override[ch];
@@ -51,6 +56,16 @@ uint16_t LinuxRCInput::read(uint8_t ch)
     if (ch >= _num_channels) {
         return 0;
     }
+#ifdef DEBUG_PPM
+    // if(2 == ch)
+    {
+        if(last[ch] != _pwm_values[ch])
+        {
+            printf("RC%din: %d->%d\n", ch, last[ch], _pwm_values[ch]);
+            last[ch] = _pwm_values[ch];
+        }
+    }
+#endif
     return _pwm_values[ch];
 }
 

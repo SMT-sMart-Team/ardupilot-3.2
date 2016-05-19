@@ -61,7 +61,7 @@ void LinuxRCInput_PRU::_timer_tick()
         if(rb_local.ring_tail > rb_local.ring_head)
         {
             dst = (uint16_t *)&(rb_local.buffer[rb_local.ring_head]);
-            src = (uint16_t *)ring_buffer + rb_local.ring_head;
+            src = (uint16_t *)ring_buffer->buffer + rb_local.ring_head*2;
             len = rb_local.ring_tail - rb_local.ring_head;
             memcpy((void*)dst, (void*)src, len*2);
         }
@@ -70,13 +70,13 @@ void LinuxRCInput_PRU::_timer_tick()
             
             // 1
             dst = (uint16_t *)&(rb_local.buffer[rb_local.ring_head]);
-            src = (uint16_t *)ring_buffer + rb_local.ring_head;
+            src = (uint16_t *)ring_buffer->buffer + rb_local.ring_head*2;
             len = NUM_RING_ENTRIES - rb_local.ring_head;
             memcpy((void*)dst, (void*)src, len*2);
 
             // 2
             dst = (uint16_t *)rb_local.buffer;
-            src = (uint16_t *)ring_buffer;
+            src = (uint16_t *)ring_buffer->buffer;
             len = rb_local.ring_tail;
             memcpy((void*)dst, (void*)src, len*2);
         }

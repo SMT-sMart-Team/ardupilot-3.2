@@ -42,6 +42,15 @@ private:
 
     void _set_filter_frequency(uint8_t filter_hz);
 
+#ifdef NEW_LPF
+    // Low Pass filters for gyro and accel 
+    LowPassFilter2pFloat _accel_filter_x;
+    LowPassFilter2pFloat _accel_filter_y;
+    LowPassFilter2pFloat _accel_filter_z;
+    LowPassFilter2pFloat _gyro_filter_x;
+    LowPassFilter2pFloat _gyro_filter_y;
+    LowPassFilter2pFloat _gyro_filter_z;
+#else
     // Low Pass filters for gyro and accel 
     LowPassFilter2p _accel_filter_x;
     LowPassFilter2p _accel_filter_y;
@@ -49,6 +58,7 @@ private:
     LowPassFilter2p _gyro_filter_x;
     LowPassFilter2p _gyro_filter_y;
     LowPassFilter2p _gyro_filter_z;
+#endif
 
     // gyro and accel instances
     uint8_t _gyro_instance;

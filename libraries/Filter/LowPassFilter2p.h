@@ -18,10 +18,11 @@
 #ifndef LOWPASSFILTER2P_H
 #define LOWPASSFILTER2P_H
 
-#ifdef NEW_LPF
 #include <AP_Math.h>
 #include <math.h>
 #include <inttypes.h>
+
+#ifdef NEW_LPF
 
 
 /// @file   LowPassFilter2p.h

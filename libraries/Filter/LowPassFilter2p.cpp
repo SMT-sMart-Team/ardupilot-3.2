@@ -19,9 +19,10 @@
 /// @brief	A class to implement a second order low pass filter 
 /// Author: Leonard Hall <LeonardTHall@gmail.com>
 
-#ifdef NEW_LPF
+#include <AP_Math.h>
 #include "LowPassFilter2p.h"
 
+#ifdef NEW_LPF
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // DigitalBiquadFilter
@@ -127,7 +128,6 @@ template class LowPassFilter2p<Vector3f>;
 
 #include <inttypes.h>
 #include <AP_Math.h>
-#include "LowPassFilter2p.h"
 
 void LowPassFilter2p::set_cutoff_frequency(float sample_freq, float cutoff_freq)
 {

@@ -24,9 +24,9 @@
 #define __LOW_PASS_FILTER_H__
 
 
+#ifdef NEW_LPF
 #include <AP_Math.h>
 #include "FilterClass.h"
-#ifdef NEW_LPF
 
 // DigitalLPF implements the filter math
 template <class T>
@@ -58,11 +58,6 @@ public:
 
     // change parameters
     void set_cutoff_frequency(float cutoff_freq);
-    void set_cutoff_frequency(float time_step, float cutoff_freq);
-    void set_time_constant(float time_step, float time_constant);
-
-    // apply - Add a new raw value to the filter, retrieve the filtered result
-    virtual T        apply(T sample);
     // return the cutoff frequency
     float get_cutoff_freq(void) const;
     T apply(T sample, float dt);
@@ -74,55 +69,7 @@ protected:
 
 private:
     DigitalLPF<T> _filter;
-    float           _alpha;             // gain value  (like 0.02) applied to each new value
-    bool            _base_value_set;    // true if the base value has been set
-    float           _base_value;        // the number of samples in the filter, maxes out at size of the filter
 };
-
-
-template <class T>
-void LowPassFilter<T>::set_cutoff_frequency(float time_step, float cutoff_freq)
-{
-    // avoid divide by zero and allow removing filtering
-    if (cutoff_freq <= 0.0f) {
-        _alpha = 1.0f;
-        return;
-    }
-
-    // calculate alpha
-    float rc = 1/(2*PI*cutoff_freq);
-    _alpha = time_step / (time_step + rc);
-}
-
-template <class T>
-void LowPassFilter<T>::set_time_constant(float time_step, float time_constant)
-{
-    // avoid divide by zero
-    if (time_constant + time_step <= 0.0f) {
-        _alpha = 1.0f;
-        return;
-    }
-
-    // calculate alpha
-    _alpha = time_step / (time_constant + time_step);
-}
-
-template <class T>
-T LowPassFilter<T>::apply(T sample)
-{
-    // initailise _base_value if required
-    if( !_base_value_set ) {
-        _base_value = sample;
-        _base_value_set = true;
-    }
-
-    // do the filtering
-    //_base_value = _alpha * (float)sample + (1.0 - _alpha) * _base_value;
-    _base_value = _base_value + _alpha * ((float)sample - _base_value);
-
-    // return the value.  Should be no need to check limits
-    return (T)_base_value;
-}
 
 // Uncomment this, if you decide to remove the instantiations in the implementation file
 /*
@@ -146,6 +93,8 @@ typedef LowPassFilter<Vector3f> LowPassFilterVector3f;
 
 
 #else
+#include <AP_Math.h>
+#include "FilterClass.h"
 // 1st parameter <T> is the type of data being filtered.
 template <class T>
 class LowPassFilter : public Filter<T>

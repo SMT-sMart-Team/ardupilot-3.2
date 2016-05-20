@@ -80,15 +80,9 @@ private:
     // LPF filters to act on Rate Feedforward terms to linearize output.
     // Due to complicated aerodynamic effects, feedforwards acting too fast can lead
     // to jerks on rate change requests.
-#ifdef NEW_LPF
-    LowPassFilterInt pitch_feedforward_filter;
-    LowPassFilterInt roll_feedforward_filter;
-    LowPassFilterInt yaw_feedforward_filter;
-#else
     LowPassFilterInt32 pitch_feedforward_filter;
     LowPassFilterInt32 roll_feedforward_filter;
     LowPassFilterInt32 yaw_feedforward_filter;
-#endif
 
     // pass through for roll and pitch
     int16_t _passthrough_roll;

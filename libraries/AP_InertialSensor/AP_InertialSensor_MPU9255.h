@@ -59,15 +59,6 @@ private:
     } _shared_data[2];
     volatile uint8_t _shared_data_idx;
 
-#ifdef NEW_LPF
-    // Low Pass filters for gyro and accel 
-    LowPassFilter2pFloat _accel_filter_x;
-    LowPassFilter2pFloat _accel_filter_y;
-    LowPassFilter2pFloat _accel_filter_z;
-    LowPassFilter2pFloat _gyro_filter_x;
-    LowPassFilter2pFloat _gyro_filter_y;
-    LowPassFilter2pFloat _gyro_filter_z;
-#else
     // Low Pass filters for gyro and accel 
     LowPassFilter2p _accel_filter_x;
     LowPassFilter2p _accel_filter_y;
@@ -75,7 +66,6 @@ private:
     LowPassFilter2p _gyro_filter_x;
     LowPassFilter2p _gyro_filter_y;
     LowPassFilter2p _gyro_filter_z;
-#endif
 
     // do we currently have a sample pending?
     bool _have_sample_available;

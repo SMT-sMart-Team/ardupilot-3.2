@@ -20,6 +20,9 @@
 #include "polygon.h"
 #include "edc.h"
 
+// AB ZhaoYJ for porting 3.3 filter to 3.2 @2016-05-20
+#define NEW_LPF
+
 #ifndef M_PI_F
  #define M_PI_F 3.141592653589793f
 #endif

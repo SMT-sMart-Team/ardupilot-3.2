@@ -25,7 +25,7 @@
 
 
 #ifdef NEW_LPF
-#include <AP_Math/AP_Math.h>
+#include <AP_Math.h>
 #include "FilterClass.h"
 
 // DigitalLPF implements the filter math

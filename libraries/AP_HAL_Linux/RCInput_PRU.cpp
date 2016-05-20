@@ -62,7 +62,7 @@ void LinuxRCInput_PRU::_timer_tick()
         {
             dst = (uint16_t *)&(rb_local.buffer[rb_local.ring_head]);
             src = (uint16_t *)ring_buffer->buffer + rb_local.ring_head*2;
-            len = (rb_local.ring_tail - rb_local.ring_head)*2;
+            len = rb_local.ring_tail - rb_local.ring_head;
             memcpy((void*)dst, (void*)src, len*2);
         }
         else // copy twice
@@ -71,13 +71,13 @@ void LinuxRCInput_PRU::_timer_tick()
             // 1
             dst = (uint16_t *)&(rb_local.buffer[rb_local.ring_head]);
             src = (uint16_t *)ring_buffer->buffer + rb_local.ring_head*2;
-            len = (NUM_RING_ENTRIES - rb_local.ring_head)*2;
+            len = NUM_RING_ENTRIES - rb_local.ring_head;
             memcpy((void*)dst, (void*)src, len*2);
 
             // 2
             dst = (uint16_t *)rb_local.buffer;
             src = (uint16_t *)ring_buffer->buffer;
-            len = rb_local.ring_tail*2;
+            len = rb_local.ring_tail;
             memcpy((void*)dst, (void*)src, len*2);
         }
 
@@ -109,7 +109,7 @@ void LinuxRCInput_PRU::init(void*)
     if (mem_fd == -1) {
         hal.scheduler->panic("Unable to open /dev/mem");
     }
-    ring_buffer = (volatile struct rb*) mmap(0, 0x1000, PROT_READ|PROT_WRITE, 
+    ring_buffer = (volatile struct ring_buffer*) mmap(0, 0x1000, PROT_READ|PROT_WRITE, 
                                                       MAP_SHARED, mem_fd, RCIN_PRUSS_SHAREDRAM_BASE);
     close(mem_fd);
     ring_buffer->ring_head = 0;

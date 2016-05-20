@@ -2,6 +2,8 @@
 
 // Function that will read the radio data, limit servos and trigger a failsafe
 // ----------------------------------------------------------------------------
+// AB ZhaoYJ for throttle_in lpf @2016-05-20
+#define LPF_THR_IN
 
 static void default_dead_zones()
 {
@@ -88,7 +90,6 @@ static void read_radio()
     uint32_t tnow_ms = millis();
 
     if (hal.rcin->new_input()) {
-        last_update_ms = tnow_ms;
         ap.new_radio_frame = true;
         uint16_t periods[8];
         hal.rcin->read(periods,8);
@@ -118,6 +119,12 @@ static void read_radio()
 
         // update output on any aux channels, for manual passthru
         RC_Channel_aux::output_ch_all();
+#ifdef LPF_THR_IN
+        float dt = (tnow_ms - last_update_ms)*1.0e-3f;
+        rc_throttle_control_in_filter.apply(g.rc_3.control_in, dt);
+#endif
+        last_update_ms = tnow_ms;
+		
     }else{
         uint32_t elapsed = tnow_ms - last_update_ms;
         // turn on throttle failsafe if no update from the RC Radio for 500ms or 2000ms if we are using RC_OVERRIDE

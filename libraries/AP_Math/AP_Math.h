@@ -19,12 +19,14 @@
 #include "quaternion.h"
 #include "polygon.h"
 #include "edc.h"
+#include "float.h"
 
-// AB ZhaoYJ for porting 3.3 filter to 3.2 @2016-05-20
-#define NEW_LPF
 
 #ifndef M_PI_F
  #define M_PI_F 3.141592653589793f
+#endif
+#ifndef M_2PI_F
+ #define M_2PI_F (2*M_PI_F)
 #endif
 #ifndef PI
  # define PI M_PI_F
@@ -74,6 +76,11 @@
 AP_PARAMDEFV(Matrix3f, Matrix3f, AP_PARAM_MATRIX3F);
 AP_PARAMDEFV(Vector3f, Vector3f, AP_PARAM_VECTOR3F);
 
+// are two floats equal
+static inline bool is_equal(const float fVal1, const float fVal2) { return fabsf(fVal1 - fVal2) < FLT_EPSILON ? true : false; }
+
+// is a float is zero
+static inline bool is_zero(const float fVal1) { return fabsf(fVal1) < FLT_EPSILON ? true : false; }
 // a varient of asin() that always gives a valid answer.
 float           safe_asin(float v);
 
@@ -108,6 +115,20 @@ uint32_t                get_distance_cm(const struct Location &loc1, const struc
 
 // return bearing in centi-degrees between two locations
 int32_t                 get_bearing_cd(const struct Location &loc1, const struct Location &loc2);
+// return determinant of square matrix
+float                   detnxn(const float C[], const uint8_t n);
+
+// Output inverted nxn matrix when returns true, otherwise matrix is Singular
+bool                    inversenxn(const float x[], float y[], const uint8_t n);
+
+// invOut is an inverted 4x4 matrix when returns true, otherwise matrix is Singular
+bool                    inverse3x3(float m[], float invOut[]);
+
+// invOut is an inverted 3x3 matrix when returns true, otherwise matrix is Singular
+bool                    inverse4x4(float m[],float invOut[]);
+
+// matrix multiplication of two NxN matrices
+float* mat_mul(float *A, float *B, uint8_t n);
 
 // see if location is past a line perpendicular to
 // the line between point1 and point2. If point1 is
@@ -152,6 +173,16 @@ float wrap_180_cd_float(float angle);
 float wrap_PI(float angle_in_radians);
 
 /*
+  wrap an angle defined in radians to the interval [0,2*PI)
+ */
+float wrap_2PI(float angle);
+
+/*
+ * check if lat and lng match. Ignore altitude and options
+ */
+bool locations_are_same(const struct Location &loc1, const struct Location &loc2);
+
+/*
   print a int32_t lat/long in decimal degrees
  */
 void print_latlon(AP_HAL::BetterStream *s, int32_t lat_or_lon);
@@ -169,31 +200,103 @@ void wgsecef2llh(const Vector3d &ecef, Vector3d &llh);
 #endif
 
 // constrain a value
-float   constrain_float(float amt, float low, float high);
-int16_t constrain_int16(int16_t amt, int16_t low, int16_t high);
-int32_t constrain_int32(int32_t amt, int32_t low, int32_t high);
+static inline float constrain_float(float amt, float low, float high)
+{
+	// the check for NaN as a float prevents propogation of
+	// floating point errors through any function that uses
+	// constrain_float(). The normal float semantics already handle -Inf
+	// and +Inf
+	if (isnan(amt)) {
+		return (low+high)*0.5f;
+	}
+	return ((amt)<(low)?(low):((amt)>(high)?(high):(amt)));
+}
+// constrain a int16_t value
+static inline int16_t constrain_int16(int16_t amt, int16_t low, int16_t high) {
+	return ((amt)<(low)?(low):((amt)>(high)?(high):(amt)));
+}
+
+// constrain a int32_t value
+static inline int32_t constrain_int32(int32_t amt, int32_t low, int32_t high) {
+	return ((amt)<(low)?(low):((amt)>(high)?(high):(amt)));
+}
+
+//matrix algebra
+bool inverse(float x[], float y[], uint16_t dim);
 
 // degrees -> radians
-float radians(float deg);
+static inline float radians(float deg) {
+	return deg * DEG_TO_RAD;
+}
 
 // radians -> degrees
-float degrees(float rad);
+static inline float degrees(float rad) {
+	return rad * RAD_TO_DEG;
+}
 
 // square
-float sq(float v);
+static inline float sq(float v) {
+	return v*v;
+}
 
-// sqrt of sum of squares
-float pythagorous2(float a, float b);
-float pythagorous3(float a, float b, float c);
+// 2D vector length
+static inline float pythagorous2(float a, float b) {
+	return sqrtf(sq(a)+sq(b));
+}
+
+// 3D vector length
+static inline float pythagorous3(float a, float b, float c) {
+	return sqrtf(sq(a)+sq(b)+sq(c));
+}
 
 #ifdef radians
 #error "Build is including Arduino base headers"
 #endif
 
-/* The following three functions used to be arduino core macros */
-#define max(a,b) ((a)>(b)?(a):(b))
-#define min(a,b) ((a)<(b)?(a):(b))
+template<typename A, typename B>
+static inline auto MIN(const A &one, const B &two) -> decltype(one < two ? one : two) {
+    return one < two ? one : two;
+}
 
+template<typename A, typename B>
+static inline auto MAX(const A &one, const B &two) -> decltype(one > two ? one : two) {
+    return one > two ? one : two;
+}
 
+#define NSEC_PER_SEC 1000000000ULL
+#define NSEC_PER_USEC 1000ULL
+#define USEC_PER_SEC 1000000ULL
+
+inline uint32_t hz_to_nsec(uint32_t freq)
+{
+    return NSEC_PER_SEC / freq;
+}
+
+inline uint32_t nsec_to_hz(uint32_t nsec)
+{
+    return NSEC_PER_SEC / nsec;
+}
+
+inline uint32_t usec_to_nsec(uint32_t usec)
+{
+    return usec * NSEC_PER_USEC;
+}
+
+inline uint32_t nsec_to_usec(uint32_t nsec)
+{
+    return nsec / NSEC_PER_USEC;
+}
+
+inline uint32_t hz_to_usec(uint32_t freq)
+{
+    return USEC_PER_SEC / freq;
+}
+
+inline uint32_t usec_to_hz(uint32_t usec)
+{
+    return USEC_PER_SEC / usec;
+}
+
+#undef INLINE
 #endif // AP_MATH_H
 

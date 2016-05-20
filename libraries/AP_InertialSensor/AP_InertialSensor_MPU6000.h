@@ -80,21 +80,12 @@ private:
     Vector3f _gyro_filtered;
 
     // Low Pass filters for gyro and accel 
-#ifdef NEW_LPF
-    LowPassFilter2pFloat _accel_filter_x;
-    LowPassFilter2pFloat _accel_filter_y;
-    LowPassFilter2pFloat _accel_filter_z;
-    LowPassFilter2pFloat _gyro_filter_x;
-    LowPassFilter2pFloat _gyro_filter_y;
-    LowPassFilter2pFloat _gyro_filter_z;
-#else
     LowPassFilter2p _accel_filter_x;
     LowPassFilter2p _accel_filter_y;
     LowPassFilter2p _accel_filter_z;
     LowPassFilter2p _gyro_filter_x;
     LowPassFilter2p _gyro_filter_y;
     LowPassFilter2p _gyro_filter_z;
-#endif
 #else
     // accumulation in timer - must be read with timer disabled
     // the sum of the values since last read

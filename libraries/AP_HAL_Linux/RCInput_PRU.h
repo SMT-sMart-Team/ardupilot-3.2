@@ -13,6 +13,12 @@
 #define RCIN_PRUSS_SHAREDRAM_BASE   0x4a311000
 // we use 300 ring buffer entries to guarantee that a full 25 byte
 // frame of 12 bits per byte
+//
+// AB ZhaoYJ for trying to add PPMSUM decoding in PRU @2016-05-21
+#define PPMSUM_DECODE_IN_PRU
+#define MAX_RCIN_NUM 16
+#define OK 0xbeef
+#define KO 0x4110 /// !beef
 
 class Linux::LinuxRCInput_PRU : public Linux::LinuxRCInput 
 {
@@ -27,12 +33,20 @@ public:
     struct rb{
         volatile uint16_t ring_head; // owned by ARM CPU
         volatile uint16_t ring_tail; // owned by the PRU
-        struct {
-               uint16_t pin_value;
-               uint16_t delta_t;
+        volatile struct {
+               volatile uint16_t pin_value;
+               volatile uint16_t delta_t;
         } buffer[NUM_RING_ENTRIES];
+#ifdef PPMSUM_DECODE_IN_PRU
+        volatile struct {
+               volatile uint16_t rcin_value[MAX_RCIN_NUM];
+               volatile uint16_t new_rc_input;
+               volatile uint16_t _num_channels;
+        } ppm_decode_out;
+#endif
     };
     volatile struct rb *ring_buffer;
+
 
 #ifdef SMT_NEW_RCIN
     struct rb rb_local;

@@ -47,6 +47,84 @@ void LinuxRCInput_PRU::init(void*)
     _s0_time = 0;
 }
 
+#ifdef PPMSUM_DECODE_IN_PRU
+
+// get rcin values of PPM
+void LinuxRCInput_PRU::_timer_tick()
+{
+    uint16_t *dst = NULL;
+    uint16_t *src = NULL;
+    uint16_t len = 0;
+
+    // do PPM first for nothing to do with decoding
+    if(OK == ring_buffer->ppm_decode_out.new_rc_input)
+    {
+        ring_buffer->ppm_decode_out.new_rc_input = KO;
+        memcpy((void*)_pwm_values, (void*)ring_buffer->ppm_decode_out.rcin_value, sizeof(uint16_t)*MAX_RCIN_NUM); 
+        _num_channels = ring_buffer->ppm_decode_out._num_channels;
+        new_rc_input = true;
+    }
+
+    // first, copy all new rcinput 
+    rb_local.ring_tail = ring_buffer->ring_tail;
+    if (rb_local.ring_tail >= NUM_RING_ENTRIES) {
+        // invalid ring_tail from PRU - ignore RC input
+        return;
+    }
+    if(rb_local.ring_tail != rb_local.ring_head)
+    {
+        // copy once
+        if(rb_local.ring_tail > rb_local.ring_head)
+        {
+            dst = (uint16_t *)&(rb_local.buffer[rb_local.ring_head]);
+            src = (uint16_t *)ring_buffer->buffer + rb_local.ring_head*2;
+            len = (rb_local.ring_tail - rb_local.ring_head)*2;
+            memcpy((void*)dst, (void*)src, len*2);
+        }
+        else // copy twice
+        {
+            
+            // 1
+            dst = (uint16_t *)&(rb_local.buffer[rb_local.ring_head]);
+            src = (uint16_t *)ring_buffer->buffer + rb_local.ring_head*2;
+            len = (NUM_RING_ENTRIES - rb_local.ring_head)*2;
+            memcpy((void*)dst, (void*)src, len*2);
+
+            // 2
+            dst = (uint16_t *)rb_local.buffer;
+            src = (uint16_t *)ring_buffer->buffer;
+            len = rb_local.ring_tail*2;
+            memcpy((void*)dst, (void*)src, len*2);
+        }
+
+        // decoding
+        while (rb_local.ring_head != rb_local.ring_tail) {
+            if (rb_local.ring_tail >= NUM_RING_ENTRIES) {
+                // invalid ring_tail from PRU - ignore RC input
+                return;
+            }
+            if (rb_local.buffer[rb_local.ring_head].pin_value == 1) {
+                // remember the time we spent in the low state
+                _s0_time = rb_local.buffer[rb_local.ring_head].delta_t;
+            } else {
+                // the pulse value is the sum of the time spent in the low
+                // and high states
+
+                // treat as SBUS
+                _process_sbus_pulse(_s0_time, rb_local.buffer[rb_local.ring_head].delta_t);
+
+                // treat as DSM
+                _process_dsm_pulse(_s0_time, rb_local.buffer[rb_local.ring_head].delta_t);
+            }
+            // move to the next ring buffer entry
+            ring_buffer->ring_head = (ring_buffer->ring_head + 1) % NUM_RING_ENTRIES;        
+            rb_local.ring_head = (rb_local.ring_head + 1) % NUM_RING_ENTRIES;        
+        }
+    }
+
+
+}
+#else
 /*
   called at 1kHz to check for new pulse capture data from the PRU
  */
@@ -107,6 +185,7 @@ void LinuxRCInput_PRU::_timer_tick()
         }
     }
 }
+#endif
 
 #else
 void LinuxRCInput_PRU::init(void*)

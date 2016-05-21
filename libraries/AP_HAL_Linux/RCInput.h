@@ -31,7 +31,10 @@ public:
  protected:
     void _process_rc_pulse(uint16_t width_s0, uint16_t width_s1);
 
- private:
+ // private:
+ // MB ZhaoYJ for add PPM_decode_in_pru @2016-05-22
+ // FIXME
+ protected:
     volatile bool new_rc_input;
 
     uint16_t _pwm_values[LINUX_RC_INPUT_NUM_CHANNELS];    

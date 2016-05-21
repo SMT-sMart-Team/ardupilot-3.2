@@ -83,6 +83,7 @@ bool ToneAlarm::play()
     if(first_time){
         first_time = false;
         prev_time = cur_time;
+        hal.gpio->write(ALARM_GPIO, ALARM_ON);
     }
     if(TIME16_SUB(cur_time, prev_time) > (duration*1000)){
         stop();

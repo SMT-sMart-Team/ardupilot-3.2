@@ -11,7 +11,6 @@
 
 // #define RCIN_PRUSS_SHAREDRAM_BASE   0x4a312000
 #define RCIN_PRUSS_SHAREDRAM_BASE   0x4a311000
-#define SHM_SIZE 0x1500
 // we use 300 ring buffer entries to guarantee that a full 25 byte
 // frame of 12 bits per byte
 

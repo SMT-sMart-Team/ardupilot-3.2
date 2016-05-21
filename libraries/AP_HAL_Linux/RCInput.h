@@ -6,6 +6,11 @@
 
 #define LINUX_RC_INPUT_NUM_CHANNELS 16
 
+#ifdef SMT_NEW_RCIN
+// AB ZhaoYJ for eliminating error pulse in PPM
+#define KILL_ERROR_PULSE
+#endif
+
 class Linux::LinuxRCInput : public AP_HAL::RCInput {
 public:
     LinuxRCInput();
@@ -33,6 +38,9 @@ public:
     uint8_t  _num_channels;
 
     void _process_ppmsum_pulse(uint16_t width);
+#ifdef KILL_ERROR_PULSE
+    void _kill_error_pulse(uint16_t *rc_in);
+#endif
     void _process_sbus_pulse(uint16_t width_s0, uint16_t width_s1);
     void _process_dsm_pulse(uint16_t width_s0, uint16_t width_s1);
 

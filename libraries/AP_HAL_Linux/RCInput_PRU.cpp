@@ -61,6 +61,13 @@ void LinuxRCInput_PRU::_timer_tick()
     {
         ring_buffer->ppm_decode_out.new_rc_input = KO;
         memcpy((void*)_pwm_values, (void*)ring_buffer->ppm_decode_out.rcin_value, sizeof(uint16_t)*MAX_RCIN_NUM); 
+        // for(unsigned ii = 0; ii < MAX_RCIN_NUM; ii++)
+        // {
+        //     if(_pwm_values[ii] == 1929)
+        //     {
+        //         printf("OMG: ch%d is %d\n", ii, _pwm_values[ii]);
+        //     }
+        // }
         _num_channels = ring_buffer->ppm_decode_out._num_channels;
         new_rc_input = true;
     }

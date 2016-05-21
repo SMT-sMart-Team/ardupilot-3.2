@@ -48,6 +48,8 @@ uint16_t LinuxRCInput::read(uint8_t ch)
 {
 #ifdef DEBUG_PPM
     static uint16_t last[16];
+    static uint16_t cnt = 0;
+    uint8_t ii = 0;
 #endif
     new_rc_input = false;
     if (_override[ch]) {
@@ -59,11 +61,18 @@ uint16_t LinuxRCInput::read(uint8_t ch)
 #ifdef DEBUG_PPM
     // if(2 == ch)
     {
-        if(last[ch] != _pwm_values[ch])
+        // if(last[ch] != _pwm_values[ch])
+        if(!(cnt%50))
         {
-            printf("RC%din: %d->%d\n", ch, last[ch], _pwm_values[ch]);
-            last[ch] = _pwm_values[ch];
+            for(ii = 0; ii < LINUX_RC_INPUT_NUM_CHANNELS; ii++)
+            {
+                printf("RC%din: %d->%d\n", ii, last[ii], _pwm_values[ii]);
+                last[ii] = _pwm_values[ii];
+                // _pwm_values[ii] = 0x789;
+            }
+            cnt = 0;
         }
+        cnt++;
     }
 #endif
     return _pwm_values[ch];

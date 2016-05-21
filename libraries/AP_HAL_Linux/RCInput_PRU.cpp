@@ -35,14 +35,14 @@ void LinuxRCInput_PRU::init(void*)
     }
     // ring_buffer = (volatile struct rb*) mmap(0, 0x1000,PROT_READ|PROT_WRITE, 
     //                                                   MAP_SHARED, mem_fd, RCIN_PRUSS_SHAREDRAM_BASE);
-    ring_buffer = (volatile struct rb*) mmap(NULL, sizeof(rb), PROT_READ, 
+    ring_buffer = (volatile struct rb*) mmap(NULL, sizeof(rb), PROT_READ|PROT_WRITE, 
                                                       MAP_SHARED, mem_fd, RCIN_PRUSS_SHAREDRAM_BASE);
     if(MAP_FAILED == ring_buffer)
     {
         hal.scheduler->panic("Failed to mmap PRU0 SHM\n");
     }
     close(mem_fd);
-    // ring_buffer->ring_head = 0;
+    ring_buffer->ring_head = 0;
     rb_local.ring_head = 0;
     _s0_time = 0;
 }

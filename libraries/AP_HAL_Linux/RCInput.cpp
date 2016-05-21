@@ -73,7 +73,12 @@ uint8_t LinuxRCInput::read(uint16_t* periods, uint8_t len)
 {
     uint8_t i;
     for (i=0; i<len; i++) {
-        periods[i] = read(i);
+        if((periods[i] = read(i))){
+            continue;
+        }
+        else{
+            break;
+        }
     }
 #ifdef KILL_ERROR_PULSE
     _kill_error_pulse(periods);
@@ -154,7 +159,7 @@ void LinuxRCInput::_kill_error_pulse(uint16_t *rc_in)
  */
 void LinuxRCInput::_process_ppmsum_pulse(uint16_t width_usec)
 {
-    if (width_usec >= 2700) {
+    if (width_usec >= 4000) {
         // a long pulse indicates the end of a frame. Reset the
         // channel counter so next pulse is channel 0
         if (ppm_state._channel_counter >= 5) {

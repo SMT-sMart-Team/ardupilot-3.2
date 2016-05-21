@@ -33,7 +33,9 @@ void LinuxRCInput_PRU::init(void*)
     if (mem_fd == -1) {
         hal.scheduler->panic("Unable to open /dev/mem");
     }
-    ring_buffer = (volatile struct rb*) mmap(0, 0x1000, PROT_READ|PROT_WRITE, 
+    // ring_buffer = (volatile struct rb*) mmap(0, 0x1000,PROT_READ|PROT_WRITE, 
+    //                                                   MAP_SHARED, mem_fd, RCIN_PRUSS_SHAREDRAM_BASE);
+    ring_buffer = (volatile struct rb*) mmap(0, SHM_SIZE, PROT_READ|PROT_WRITE, 
                                                       MAP_SHARED, mem_fd, RCIN_PRUSS_SHAREDRAM_BASE);
     close(mem_fd);
     ring_buffer->ring_head = 0;

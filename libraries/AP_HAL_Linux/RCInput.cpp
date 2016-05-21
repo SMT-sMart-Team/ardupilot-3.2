@@ -80,6 +80,9 @@ uint8_t LinuxRCInput::read(uint16_t* periods, uint8_t len)
             break;
         }
     }
+#ifdef KILL_ERROR_PULSE
+    _kill_error_pulse(periods);
+#endif
     return (i+1);
 }
 
@@ -115,6 +118,41 @@ void LinuxRCInput::clear_overrides()
     }
 }
 
+#ifdef KILL_ERROR_PULSE
+#define KILL_TH 5
+#define NUM_CH 8
+void LinuxRCInput::_kill_error_pulse(uint16_t *rc_in)
+{
+    static uint16_t prev_rc_in[NUM_CH];
+    static uint16_t pulse_num[NUM_CH];
+    static uint16_t first = 1;
+    if(!first)
+    {
+        for(unsigned ii = 0; ii < NUM_CH; ii++)
+        {
+            if(rc_in[ii] > ((prev_rc_in[ii]*1178) >> 10)) // 1.15
+            {
+                pulse_num[ii]++;
+                if(pulse_num[ii] > KILL_TH) // normal, let it go
+                {
+                    pulse_num[ii] = 0;;
+                    prev_rc_in[ii] = rc_in[ii];
+                }
+                else // error
+                {
+                    rc_in[ii] = prev_rc_in[ii];
+                }
+            }
+        }
+    }
+    else
+    {
+        memcpy((void*)prev_rc_in, (void*)rc_in, sizeof(uint16_t)*NUM_CH); 
+        first = 0;
+    }
+
+}
+#endif
 
 /*
   process a PPM-sum pulse of the given width

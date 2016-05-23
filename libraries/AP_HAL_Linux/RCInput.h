@@ -8,7 +8,7 @@
 
 #ifdef SMT_NEW_RCIN
 // AB ZhaoYJ for eliminating error pulse in PPM
-#define KILL_ERROR_PULSE
+// #define KILL_ERROR_PULSE
 #endif
 
 class Linux::LinuxRCInput : public AP_HAL::RCInput {

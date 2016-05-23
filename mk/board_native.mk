@@ -96,6 +96,7 @@ $(SKETCHELF):	$(SKETCHOBJS) $(LIBOBJS)
 	@echo "Building $(SKETCHELF)"
 	$(RULEHDR)
 	$(v)$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)
+	arm-linux-gnueabihf-strip $(SKETCHELF)
 	$(v)cp $(SKETCHELF) .
 	@rm -rf $(BUILDROOT)
 	@echo "Firmware is in $(BUILDELF)"

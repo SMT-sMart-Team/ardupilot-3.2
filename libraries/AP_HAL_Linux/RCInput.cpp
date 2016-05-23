@@ -123,8 +123,9 @@ void LinuxRCInput::clear_overrides()
 }
 
 #ifdef KILL_ERROR_PULSE
-#define KILL_TH 5
+#define ERR_NUM_TH 5
 #define NUM_CH 8
+#define GLITCH_RCIN 1178 // 1.15 = 1178/1024
 void LinuxRCInput::_kill_error_pulse(uint16_t *rc_in)
 {
     static uint16_t prev_rc_in[NUM_CH];
@@ -134,10 +135,10 @@ void LinuxRCInput::_kill_error_pulse(uint16_t *rc_in)
     {
         for(unsigned ii = 0; ii < NUM_CH; ii++)
         {
-            if(rc_in[ii] > ((prev_rc_in[ii]*1178) >> 10)) // 1.15
+            if(rc_in[ii] > ((prev_rc_in[ii]*GLITCH_RCIN) >> 10)) // 1.15
             {
                 pulse_num[ii]++;
-                if(pulse_num[ii] > KILL_TH) // normal, let it go
+                if(pulse_num[ii] > ERR_NUM_TH) // normal, let it go
                 {
                     pulse_num[ii] = 0;;
                     prev_rc_in[ii] = rc_in[ii];

@@ -217,7 +217,7 @@
 #define SMT_NEW_SENSORS_BOARD 
 
 // add by ZhaoYJ for test alarm on SMT new board @2016-05-18
-#define SMT_GPIO_ALARM
+// #define SMT_GPIO_ALARM
 
 // add by ZhaoYJ for hopping on SMT new board @2016-05-19
 #define SMT_NEW_RCIN

@@ -373,31 +373,41 @@ reset:
 /*
   process a RC input pulse of the given width
  */
+// #define DUMP_RCIN
+#define DUMP_LEN 100000 // 120000
+#ifdef DUMP_RCIN
+uint16_t log1[DUMP_LEN];
+uint16_t log2[DUMP_LEN];
+uint16_t log3[DUMP_LEN];
+#endif
 void LinuxRCInput::_process_rc_pulse(uint16_t width_s0, uint16_t width_s1)
 {
 #ifdef DUMP_RCIN
 	static int cnt = 0;
-	static uint16_t log1[120000];
-	static uint16_t log2[120000];
-	static uint16_t log3[120000];
 
-	if(cnt < 120000)
+	if(cnt < DUMP_LEN)
 	{
 		log1[cnt] = width_s0;
 		log2[cnt] = width_s1;
 		log3[cnt] = ppm_state._channel_counter;
 		cnt ++;
+        if(!(cnt%(DUMP_LEN/20)))
+        {
+		    printf("logging... cnt = %d\n", cnt);
+        }
 	}
 	else
 	{
-		FILE *rclog;
+		FILE *rclog = NULL;
 		if (rclog == NULL) {
-			rclog = fopen("/tmp/rcin1.log", "w");
+			rclog = fopen("/tmp/rcin.dump", "w");
 		}
-		for(int i = 0;i< 120000;i++)
 		{
 			if (rclog) {
-				fprintf(rclog, "%u,%u,%u\n", (unsigned)log3[i],(unsigned)log1[i], (unsigned)log2[i]);
+		        for(int i = 0;i< DUMP_LEN;i++)
+                {
+			    	fprintf(rclog, "%u,%u,%u\n", (unsigned)log3[i],(unsigned)log1[i], (unsigned)log2[i]);
+                }
 			}
 		}
 		printf("log finished \n");

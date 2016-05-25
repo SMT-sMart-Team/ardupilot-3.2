@@ -222,7 +222,7 @@
 #endif
 
 // add by ZhaoYJ for hopping on SMT new board @2016-05-19
-#define SMT_NEW_RCIN
+// #define SMT_NEW_RCIN
 
 // AB ZhaoYJ for eliminating error pulse in PPM
 // #define KILL_ERROR_PULSE

@@ -375,15 +375,35 @@ reset:
  */
 void LinuxRCInput::_process_rc_pulse(uint16_t width_s0, uint16_t width_s1)
 {
-#if 0
-    // useful for debugging
-    static FILE *rclog;
-    if (rclog == NULL) {
-        rclog = fopen("/tmp/rcin.log", "w");
-    }
-    if (rclog) {
-        fprintf(rclog, "%u %u\n", (unsigned)width_s0, (unsigned)width_s1);
-    }
+#ifdef DUMP_RCIN
+	static int cnt = 0;
+	static uint16_t log1[120000];
+	static uint16_t log2[120000];
+	static uint16_t log3[120000];
+
+	if(cnt < 120000)
+	{
+		log1[cnt] = width_s0;
+		log2[cnt] = width_s1;
+		log3[cnt] = ppm_state._channel_counter;
+		cnt ++;
+	}
+	else
+	{
+		FILE *rclog;
+		if (rclog == NULL) {
+			rclog = fopen("/tmp/rcin1.log", "w");
+		}
+		for(int i = 0;i< 120000;i++)
+		{
+			if (rclog) {
+				fprintf(rclog, "%u,%u,%u\n", (unsigned)log3[i],(unsigned)log1[i], (unsigned)log2[i]);
+			}
+		}
+		printf("log finished \n");
+		exit(1);
+
+	}
 #endif
     // treat as PPM-sum
     _process_ppmsum_pulse(width_s0 + width_s1);

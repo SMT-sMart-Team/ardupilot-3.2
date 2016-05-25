@@ -217,10 +217,18 @@
 #define SMT_NEW_SENSORS_BOARD 
 
 // add by ZhaoYJ for test alarm on SMT new board @2016-05-18
+#ifdef SMT_NEW_SENSORS_BOARD
 // #define SMT_GPIO_ALARM
+#endif
 
 // add by ZhaoYJ for hopping on SMT new board @2016-05-19
 #define SMT_NEW_RCIN
+
+// AB ZhaoYJ for eliminating error pulse in PPM
+// #define KILL_ERROR_PULSE
+
+// AB ZhaoYJ for trying to add PPMSUM decoding in PRU @2016-05-21
+// #define PPMSUM_DECODE_IN_PRU
 
 // #define HAL_INS_DEFAULT HAL_INS_MPU9255
 // #define HAL_BARO_DEFAULT HAL_BARO_MS5611_SPI

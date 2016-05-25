@@ -163,7 +163,7 @@ void LinuxRCOutput_PRU::rcout_keep_alive(void)
         }
         else
         {
-            ::printf("Error: unknown PRU keep alive code!\n");
+            ::printf("Error: unknown PRU keep alive code 0x%08x!\n", sharedMem_cmd->keep_alive & 0xFFFF);
         }
     }
     else if(1 == time_out) // wait for 1st PRU reply (PRU wake up)

@@ -33,10 +33,14 @@ void LinuxRCInput_PRU::init(void*)
     if (mem_fd == -1) {
         hal.scheduler->panic("Unable to open /dev/mem");
     }
-    // ring_buffer = (volatile struct rb*) mmap(0, 0x1000,PROT_READ|PROT_WRITE, 
-    //                                                   MAP_SHARED, mem_fd, RCIN_PRUSS_SHAREDRAM_BASE);
+#ifdef PRU_SHM_NEW_SIZE
     ring_buffer = (volatile struct rb*) mmap(0, sizeof(rb) + 0x100, PROT_READ|PROT_WRITE, 
                                                       MAP_SHARED, mem_fd, RCIN_PRUSS_SHAREDRAM_BASE);
+#else
+    ring_buffer = (volatile struct rb*) mmap(0, 0x1000,PROT_READ|PROT_WRITE, 
+                                                    MAP_SHARED, mem_fd, RCIN_PRUSS_SHAREDRAM_BASE);
+#endif
+
     if(MAP_FAILED == ring_buffer)
     {
         hal.scheduler->panic("Failed to mmap PRU0 SHM\n");
@@ -208,8 +212,8 @@ void LinuxRCInput_PRU::init(void*)
     _s0_time = 0;
 
     // enable the spektrum RC input power
-    hal.gpio->pinMode(BBB_P8_17, HAL_GPIO_OUTPUT);
-    hal.gpio->write(BBB_P8_17, 1);
+    // hal.gpio->pinMode(BBB_P8_17, HAL_GPIO_OUTPUT);
+    // hal.gpio->write(BBB_P8_17, 1);
 }
 
 /*

@@ -223,6 +223,8 @@
 
 // add by ZhaoYJ for hopping on SMT new board @2016-05-19
 // #define SMT_NEW_RCIN
+// #define PRU_SHM_NEW_BASE
+// #define PRU_SHM_NEW_SIZE
 
 // AB ZhaoYJ for eliminating error pulse in PPM
 // #define KILL_ERROR_PULSE

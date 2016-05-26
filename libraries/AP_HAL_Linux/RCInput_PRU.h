@@ -9,8 +9,11 @@
 
 #include <AP_HAL_Linux.h>
 
-// #define RCIN_PRUSS_SHAREDRAM_BASE   0x4a312000
+#ifdef PRU_SHM_NEW_BASE
 #define RCIN_PRUSS_SHAREDRAM_BASE   0x4a311000
+#else
+#define RCIN_PRUSS_SHAREDRAM_BASE   0x4a312000
+#endif
 // we use 300 ring buffer entries to guarantee that a full 25 byte
 // frame of 12 bits per byte
 //
@@ -26,8 +29,8 @@ public:
     void _timer_tick(void);
 
  private:
-    static const unsigned int NUM_RING_ENTRIES=256;
-    // static const unsigned int NUM_RING_ENTRIES=300;
+    // static const unsigned int NUM_RING_ENTRIES=256;
+    static const unsigned int NUM_RING_ENTRIES=300;
     // shared ring buffer with the PRU which records pin transitions
     struct rb{
         volatile uint16_t ring_head; // owned by ARM CPU

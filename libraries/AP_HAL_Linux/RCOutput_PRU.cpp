@@ -34,8 +34,14 @@ void LinuxRCOutput_PRU::init(void* machtnicht)
     uint32_t mem_fd;
     signal(SIGBUS,catch_sigbus);
     mem_fd = open("/dev/mem", O_RDWR|O_SYNC);
+#ifdef PRU_SHM_NEW_SIZE
     sharedMem_cmd = (struct pwm_cmd *) mmap(0, sizeof(pwm_cmd) + 0x100, PROT_READ|PROT_WRITE, 
                                             MAP_SHARED, mem_fd, RCOUT_PRUSS_SHAREDRAM_BASE);
+#else
+    sharedMem_cmd = (struct pwm_cmd *) mmap(0, 0x1000, PROT_READ|PROT_WRITE, 
+                                            MAP_SHARED, mem_fd, RCOUT_PRUSS_SHAREDRAM_BASE);
+#endif
+
     if(MAP_FAILED == sharedMem_cmd)
     {
         hal.scheduler->panic("Failed to mmap PRU1 SHM\n");

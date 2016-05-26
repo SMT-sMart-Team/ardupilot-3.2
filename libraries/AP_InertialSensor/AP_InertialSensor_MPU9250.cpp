@@ -26,7 +26,7 @@ extern const AP_HAL::HAL& hal;
 
 #define RANGE_CHANGE                                    
 // #define DLPF_CHANGE                                     
-#define DISABLE_DLPF
+// #define DISABLE_DLPF
 
 //register addr use it to config accel filter delaytime and bandwidth
 #define MPUREG_ACCEL_CONFIG2                                     0x1D

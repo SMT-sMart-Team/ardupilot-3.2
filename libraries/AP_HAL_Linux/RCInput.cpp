@@ -374,7 +374,7 @@ reset:
   process a RC input pulse of the given width
  */
 // #define DUMP_RCIN
-#define DUMP_LEN 100000 // 120000
+#define DUMP_LEN 200000 // 120000
 #ifdef DUMP_RCIN
 uint16_t log1[DUMP_LEN];
 uint16_t log2[DUMP_LEN];

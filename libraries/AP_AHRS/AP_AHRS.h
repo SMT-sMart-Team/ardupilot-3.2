@@ -35,7 +35,8 @@
 
 // Copter defaults to EKF on by default, all others off
 #if APM_BUILD_TYPE(APM_BUILD_ArduCopter)
-#define AHRS_EKF_USE_DEFAULT    1
+// #define AHRS_EKF_USE_DEFAULT    1
+#define AHRS_EKF_USE_DEFAULT    0
 #else
 #define AHRS_EKF_USE_DEFAULT    0
 #endif

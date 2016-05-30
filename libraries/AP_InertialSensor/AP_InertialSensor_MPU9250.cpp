@@ -25,18 +25,20 @@
 extern const AP_HAL::HAL& hal;
 
 #define RANGE_CHANGE                                    
+// #define ACCEL_RANGE_CHANGE 
 // #define DLPF_CHANGE                                     
-// #define DISABLE_DLPF
+#define DISABLE_DLPF
 
 //register addr use it to config accel filter delaytime and bandwidth
 #define MPUREG_ACCEL_CONFIG2                                     0x1D
 
-#ifdef RANGE_CHANGE
+#ifdef ACCEL_RANGE_CHANGE
 //accel as 8192 LSB/mg at scale factor of +/- 4g (AFS_SEL==1)
 #define MPU9250_ACCEL_SCALE_1G    (GRAVITY_MSS / 8192.0f)
 #else
 // MPU6000 accelerometer scaling
-#define MPU9250_ACCEL_SCALE_1G    (GRAVITY_MSS / 4096.0f)
+#define MPU9250_ACCEL_SCALE_1G    (GRAVITY_MSS / 2048.0f)
+// #define MPU9250_ACCEL_SCALE_1G    (GRAVITY_MSS / 4096.0f)
 #endif
 
 #define MPUREG_XG_OFFS_TC                               0x00
@@ -510,7 +512,11 @@ bool AP_InertialSensor_MPU9250::_hardware_init(void)
     _register_write(MPUREG_GYRO_CONFIG, BITS_GYRO_FS_250DPS);  // Gyro scale 250º/s
 #endif
     // RM-MPU-9250A-00.pdf, pg. 15, select accel full scale 4g
+#ifdef ACCEL_RANGE_CHANGE
     _register_write(MPUREG_ACCEL_CONFIG,1<<3);
+#else
+    _register_write(MPUREG_ACCEL_CONFIG,3<<3);
+#endif
 #else
     _register_write(MPUREG_GYRO_CONFIG, BITS_GYRO_FS_2000DPS);  // Gyro scale 2000º/s
     // RM-MPU-9250A-00.pdf, pg. 15, select accel full scale 8g

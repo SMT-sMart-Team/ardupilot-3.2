@@ -2,4 +2,8 @@ Version
 ======================================================
 SMT v1.0 --- 2016-06-02
     --- test done with GZ
+SMT v1.0 --- 2016-06-12
+    --- merge hashlet codes into arducopter,set default input file="/root/SMT/.smt_words.txt" defualt keyslot = 2, defualt STORE="/root/.SMTKeys"
+        AruCopter will execute "SMTEncrypt mac" command before init, if failed, arducopter will exit.
+
 

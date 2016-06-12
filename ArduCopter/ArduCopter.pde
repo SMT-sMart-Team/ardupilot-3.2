@@ -158,6 +158,9 @@
 #include <AP_LandingGear.h>     // Landing Gear library
 #include <AP_Terrain.h>
 
+#include <assert.h>
+#define BUFSIZE 256
+
 // AP_HAL to Arduino compatibility layer
 #include "compat.h"
 // Configuration
@@ -877,12 +880,42 @@ static const AP_Scheduler::Task scheduler_tasks[] PROGMEM = {
 };
 #endif
 
-
+#ifdef SMT_HASHLET_USE 
+int execute(char* command,char* buf,int bufmax)  
+{  
+    FILE* fp;  
+    int i;  
+  
+    if((fp=popen(command,"r"))==NULL){  
+        i=sprintf(buf,"error command line:%s \n",command);  
+    }else{  
+        i=0;  
+        while((buf[i]=fgetc(fp))!=EOF && i<bufmax-1)  
+            i++;  
+        pclose(fp);  
+    }  
+    buf[i]='\0';  
+    return i;  
+}
+#endif
 void setup() 
 {
     printf("main setup start\n");
     cliSerial = hal.console;
-
+#ifdef SMT_HASHLET_USE
+    int sn;  
+    char buf[BUFSIZE]; 
+    memset(buf,0,BUFSIZE); 
+    char* targetStr = "encrypt success\n";
+    sn=execute("SMTEncrypt mac",buf,BUFSIZE);   
+   
+    printf("%s\n",buf);   
+    if(0 !=strcmp(buf,targetStr))
+    {
+       printf("encrypt error\n");
+       exit(1);
+    }
+#endif
     // Load the default values of variables listed in var_info[]s
     AP_Param::setup_sketch_defaults();
 

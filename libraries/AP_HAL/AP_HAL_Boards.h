@@ -213,6 +213,8 @@
 #define KEEP_ALIVE_TIME_OUT_HOST 50 // second 
 #define KEEP_ALIVE_TIME_OUT_PRU 75 // 75*20ms
 
+// add by Mi for test SMT new board atsha204a debug using hashlet @2016-06-12
+#define SMT_HASHLET_USE
 // add by ZhaoYJ for test SMT new board @2016-05-09
 #define SMT_NEW_SENSORS_BOARD 
 

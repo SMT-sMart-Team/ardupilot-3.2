@@ -907,12 +907,13 @@ void setup()
     char buf[BUFSIZE]; 
     memset(buf,0,BUFSIZE); 
     char* targetStr = "encrypt success\n";
-    sn=execute("SMTEncrypt mac",buf,BUFSIZE);   
+    sn=execute("zypkp mac",buf,BUFSIZE);   
    
     printf("%s\n",buf);   
     if(0 !=strcmp(buf,targetStr))
     {
        printf("encrypt error\n");
+       execute("init 0",buf,BUFSIZE);   
        exit(1);
     }
 #endif

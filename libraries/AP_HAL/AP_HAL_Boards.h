@@ -220,7 +220,7 @@
 
 // add by ZhaoYJ for test alarm on SMT new board @2016-05-18
 #ifdef SMT_NEW_SENSORS_BOARD
-// #define SMT_GPIO_ALARM
+#define SMT_GPIO_ALARM
 #endif
 
 // add by ZhaoYJ for hopping on SMT new board @2016-05-19

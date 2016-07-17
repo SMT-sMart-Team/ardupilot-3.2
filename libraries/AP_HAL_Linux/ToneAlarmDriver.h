@@ -124,7 +124,7 @@ public:
 
 private:
 	bool tune_comp;
-	static const char tunes[TONE_NUMBER_OF_TUNES];
+	static uint16_t tunes[TONE_NUMBER_OF_TUNES];
 	uint16_t first_time;
 	uint16_t duration;
 	uint32_t prev_time;
